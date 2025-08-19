@@ -13,7 +13,7 @@ A powerful web application that compares token efficiency between JSON, XML, and
 
 ## 🚀 Live Demo
 
-Visit the live application: [Format Token Comparison Tool](https://fiberta.github.io/format-token-comparison/)
+Visit the live application: [Format Token Comparison Tool](https://wonderwhy-er.github.io/format-token-comparison/)
 
 ## 📊 What It Does
 
@@ -75,7 +75,7 @@ For typical user data:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/fiberta/format-token-comparison.git
+git clone https://github.com/wonderwhy-er/format-token-comparison.git
 cd format-token-comparison
 ```
 
