@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>Format Token Comparison Tool - JSON vs XML vs YAML Token Efficiency</title>
-    <meta name="description" content="Compare token efficiency between JSON, XML, and YAML formats. Analyze formatted vs minified token counts for OpenAI API cost optimization. Real-time format conversion and token visualization.">
-    <meta name="keywords" content="JSON, XML, YAML, token count, OpenAI tokens, API cost optimization, format comparison, js-tiktoken, GPT tokens, data format efficiency">
+    <title>AI Token Efficiency: Which Data Format Saves You More Money? JSON vs XML vs YAML</title>
+    <meta name="description" content="Compare token efficiency between JSON, XML, and YAML formats. Optimize your OpenAI API costs with real token analysis. See which format saves up to 48% on AI API costs.">
+    <meta name="keywords" content="AI token efficiency, JSON vs XML vs YAML, OpenAI API cost optimization, token count comparison, data format efficiency, GPT tokens, tiktoken analysis, AI cost savings">
     <meta name="author" content="Format Token Comparison Tool">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Format Token Comparison Tool - JSON vs XML vs YAML">
-    <meta property="og:description" content="Compare token efficiency between JSON, XML, and YAML formats. Optimize your OpenAI API costs by choosing the most token-efficient format.">
+    <meta property="og:title" content="AI Token Efficiency: Which Data Format Saves You More Money? JSON vs XML vs YAML">
+    <meta property="og:description" content="Compare token efficiency between JSON, XML, and YAML formats. Optimize your OpenAI API costs with real token analysis. See which format saves up to 48% on costs.">
     <meta property="og:url" content="https://your-username.github.io/format-token-comparison/">
-    <meta property="og:site_name" content="Format Token Comparison Tool">
+    <meta property="og:site_name" content="AI Token Efficiency Tool">
     <meta property="og:locale" content="en_US">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Format Token Comparison Tool - JSON vs XML vs YAML">
-    <meta name="twitter:description" content="Compare token efficiency between JSON, XML, and YAML formats for OpenAI API optimization.">
+    <meta name="twitter:title" content="AI Token Efficiency: Which Data Format Saves You More Money?">
+    <meta name="twitter:description" content="Compare JSON, XML, and YAML token efficiency. Optimize your OpenAI API costs with real analysis.">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://your-username.github.io/format-token-comparison/">
@@ -421,7 +421,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>📊 Format Token Comparison Tool</h1>
+        <h1>🔢 AI Token Efficiency Comparison</h1>
         
         <div id="library-status" class="status loading">
             ⏳ Initializing js-tiktoken library...
@@ -1822,8 +1822,8 @@
                 document.getElementById('json-input').value = JSON.stringify(exampleData, null, 2);
                 handleFormatChange('json');
                 
-                // Reset the dropdown
-                selectElement.value = '';
+                // Don't reset the dropdown - keep the selection visible
+                // selectElement.value = '';
                 
                 // Auto-run comparison after loading example
                 setTimeout(() => {
@@ -1858,6 +1858,8 @@
             
             // Auto-load a sample example on page load
             setTimeout(() => {
+                const selectElement = document.getElementById('example-select');
+                selectElement.value = 'user-list'; // Set the dropdown to show the selection
                 loadExample('user-list'); // Load the user list example by default
             }, 1000);
         }
