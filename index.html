@@ -446,6 +446,35 @@
             margin: 0 0 10px 0;
             font-size: 16px;
         }
+        .footer-main {
+            font-size: 18px !important;
+            margin-bottom: 15px !important;
+            text-align: center;
+        }
+        .footer-main strong {
+            font-size: 20px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .footer-main a {
+            color: #FFD700 !important;
+            text-decoration: none !important;
+            border-bottom: 2px solid #FFD700 !important;
+            font-weight: 900 !important;
+            padding: 2px 4px;
+            border-radius: 3px;
+            background: rgba(255,215,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .footer-main a:hover {
+            background: rgba(255,215,0,0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .footer-secondary {
+            font-size: 14px !important;
+            opacity: 0.85;
+            text-align: center;
+        }
         .footer-description {
             font-size: 14px !important;
             opacity: 0.9;
@@ -652,9 +681,11 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>
-                ⚡ Built with <a href="https://desktopcommander.app/" target="_blank" rel="noopener noreferrer">Desktop Commander</a>
-                | 
+            <p class="footer-main">
+                ⚡ <strong>Built with <a href="https://desktopcommander.app/" target="_blank" rel="noopener noreferrer">Desktop Commander</a></strong>
+                - The ultimate AI-powered development environment
+            </p>
+            <p class="footer-secondary">
                 🔢 Powered by <a href="https://github.com/dqbd/tiktoken" target="_blank" rel="noopener noreferrer">js-tiktoken</a>
                 |
                 📊 Compare JSON, XML & YAML token efficiency
