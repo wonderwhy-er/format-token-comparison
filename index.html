@@ -367,44 +367,50 @@
         .savings-none {
             color: #666;
         }
-        .medal-gold {
+        .rank-1st {
             background: linear-gradient(135deg, #FFD700, #FFA500) !important;
             color: #333 !important;
             font-weight: bold !important;
             position: relative;
         }
-        .medal-gold::after {
-            content: "🥇";
+        .rank-1st::after {
+            content: "1st";
             position: absolute;
             top: 2px;
             right: 4px;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
         }
-        .medal-silver {
+        .rank-2nd {
             background: linear-gradient(135deg, #C0C0C0, #A8A8A8) !important;
             color: #333 !important;
             font-weight: bold !important;
             position: relative;
         }
-        .medal-silver::after {
-            content: "🥈";
+        .rank-2nd::after {
+            content: "2nd";
             position: absolute;
             top: 2px;
             right: 4px;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
         }
-        .medal-bronze {
+        .rank-3rd {
             background: linear-gradient(135deg, #CD7F32, #B87333) !important;
             color: #fff !important;
             font-weight: bold !important;
             position: relative;
         }
-        .medal-bronze::after {
-            content: "🥉";
+        .rank-3rd::after {
+            content: "3rd";
             position: absolute;
             top: 2px;
             right: 4px;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
         }
         .token-versions {
             display: grid;
@@ -460,7 +466,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔢 AI Token Efficiency Comparison</h1>
+        <h1>🔢 AI Token Efficiency: Which Data Format Saves You More Money?</h1>
         
         <div id="library-status" class="status loading">
             ⏳ Initializing js-tiktoken library...
@@ -1086,24 +1092,24 @@
             // Sort by token count (ascending - lower is better)
             allTokenCounts.sort((a, b) => a.count - b.count);
             
-            // Clear all existing medal classes
+            // Clear all existing ranking classes
             allTokenCounts.forEach(item => {
                 const cell = document.getElementById(item.cellId);
-                cell.classList.remove('medal-gold', 'medal-silver', 'medal-bronze');
+                cell.classList.remove('rank-1st', 'rank-2nd', 'rank-3rd');
             });
             
-            // Assign medals to top 3 performers (lowest token counts)
+            // Assign rankings to top 3 performers (lowest token counts)
             if (allTokenCounts.length >= 1) {
-                const goldCell = document.getElementById(allTokenCounts[0].cellId);
-                goldCell.classList.add('medal-gold');
+                const firstCell = document.getElementById(allTokenCounts[0].cellId);
+                firstCell.classList.add('rank-1st');
             }
             if (allTokenCounts.length >= 2) {
-                const silverCell = document.getElementById(allTokenCounts[1].cellId);
-                silverCell.classList.add('medal-silver');
+                const secondCell = document.getElementById(allTokenCounts[1].cellId);
+                secondCell.classList.add('rank-2nd');
             }
             if (allTokenCounts.length >= 3) {
-                const bronzeCell = document.getElementById(allTokenCounts[2].cellId);
-                bronzeCell.classList.add('medal-bronze');
+                const thirdCell = document.getElementById(allTokenCounts[2].cellId);
+                thirdCell.classList.add('rank-3rd');
             }
             
             // Store results globally for token visualization
