@@ -574,10 +574,6 @@
                 🔍 Compare Token Counts
             </button>
             
-            <button class="sample-data-btn" onclick="loadSampleData()">
-                📋 Load Sample Data
-            </button>
-            
             <button class="sample-data-btn" onclick="clearAllData()">
                 🗑️ Clear All
             </button>
@@ -593,7 +589,6 @@
                             <th>Format</th>
                             <th>Formatted Tokens</th>
                             <th>Minified Tokens</th>
-                            <th>Token Savings</th>
                             <th>Formatted Chars</th>
                             <th>Minified Chars</th>
                         </tr>
@@ -603,7 +598,6 @@
                             <td><strong>📄 JSON</strong></td>
                             <td id="table-json-tokens-formatted">-</td>
                             <td id="table-json-tokens-minified">-</td>
-                            <td id="table-json-savings">-</td>
                             <td id="table-json-chars-formatted">-</td>
                             <td id="table-json-chars-minified">-</td>
                         </tr>
@@ -611,7 +605,6 @@
                             <td><strong>🏷️ XML</strong></td>
                             <td id="table-xml-tokens-formatted">-</td>
                             <td id="table-xml-tokens-minified">-</td>
-                            <td id="table-xml-savings">-</td>
                             <td id="table-xml-chars-formatted">-</td>
                             <td id="table-xml-chars-minified">-</td>
                         </tr>
@@ -619,7 +612,6 @@
                             <td><strong>📝 YAML</strong></td>
                             <td id="table-yaml-tokens-formatted">-</td>
                             <td id="table-yaml-tokens-minified">-</td>
-                            <td id="table-yaml-savings">-</td>
                             <td id="table-yaml-chars-formatted">-</td>
                             <td id="table-yaml-chars-minified">-</td>
                         </tr>
@@ -1088,15 +1080,6 @@
                 document.getElementById(`table-${format}-tokens-minified`).textContent = result.minified.tokens;
                 document.getElementById(`table-${format}-chars-formatted`).textContent = result.formatted.chars;
                 document.getElementById(`table-${format}-chars-minified`).textContent = result.minified.chars;
-                
-                const tableSavingsElement = document.getElementById(`table-${format}-savings`);
-                if (result.savings > 0) {
-                    tableSavingsElement.textContent = `-${result.savings} (${((result.savings / result.formatted.tokens) * 100).toFixed(1)}%)`;
-                    tableSavingsElement.className = 'savings-positive';
-                } else {
-                    tableSavingsElement.textContent = 'None';
-                    tableSavingsElement.className = 'savings-none';
-                }
             });
             
             // Create ranking system based on token counts (lower is better)
