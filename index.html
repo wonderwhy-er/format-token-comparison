@@ -3,7 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Format Token Comparison Tool</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>Format Token Comparison Tool - JSON vs XML vs YAML Token Efficiency</title>
+    <meta name="description" content="Compare token efficiency between JSON, XML, and YAML formats. Analyze formatted vs minified token counts for OpenAI API cost optimization. Real-time format conversion and token visualization.">
+    <meta name="keywords" content="JSON, XML, YAML, token count, OpenAI tokens, API cost optimization, format comparison, js-tiktoken, GPT tokens, data format efficiency">
+    <meta name="author" content="Format Token Comparison Tool">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Format Token Comparison Tool - JSON vs XML vs YAML">
+    <meta property="og:description" content="Compare token efficiency between JSON, XML, and YAML formats. Optimize your OpenAI API costs by choosing the most token-efficient format.">
+    <meta property="og:url" content="https://your-username.github.io/format-token-comparison/">
+    <meta property="og:site_name" content="Format Token Comparison Tool">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Format Token Comparison Tool - JSON vs XML vs YAML">
+    <meta name="twitter:description" content="Compare token efficiency between JSON, XML, and YAML formats for OpenAI API optimization.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://your-username.github.io/format-token-comparison/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Format Token Comparison Tool",
+        "description": "Compare token efficiency between JSON, XML, and YAML formats for OpenAI API cost optimization",
+        "url": "https://your-username.github.io/format-token-comparison/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "Desktop Commander"
+        }
+    }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -339,6 +386,37 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
+        .footer {
+            margin-top: 50px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer p {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .footer-description {
+            font-size: 14px !important;
+            opacity: 0.9;
+            margin-top: 15px !important;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.2s ease;
+        }
+        .footer a:hover {
+            border-bottom-color: #fff;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -529,6 +607,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>
+                ⚡ Built with <a href="https://desktopcommander.app/" target="_blank" rel="noopener noreferrer">Desktop Commander</a>
+                | 
+                🔢 Powered by <a href="https://github.com/dqbd/tiktoken" target="_blank" rel="noopener noreferrer">js-tiktoken</a>
+                |
+                📊 Compare JSON, XML & YAML token efficiency
+            </p>
+            <p class="footer-description">
+                Optimize your OpenAI API costs by choosing the most token-efficient data format for your applications.
+            </p>
+        </div>
+    </footer>
 
     <!-- Load js-yaml library for YAML parsing -->
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
@@ -1713,19 +1807,28 @@
         };
 
         // Load example function
-        window.loadExample = function() {
+        window.loadExample = function(exampleKey) {
             const selectElement = document.getElementById('example-select');
-            const selectedValue = selectElement.value;
             
-            if (!selectedValue) return;
+            // If called from dropdown, get the selected value
+            if (!exampleKey) {
+                exampleKey = selectElement.value;
+            }
             
-            const exampleData = examples[selectedValue];
+            if (!exampleKey) return;
+            
+            const exampleData = examples[exampleKey];
             if (exampleData) {
                 document.getElementById('json-input').value = JSON.stringify(exampleData, null, 2);
                 handleFormatChange('json');
                 
                 // Reset the dropdown
                 selectElement.value = '';
+                
+                // Auto-run comparison after loading example
+                setTimeout(() => {
+                    compareFormats();
+                }, 500);
             }
         }
 
@@ -1752,6 +1855,11 @@
         if (Tiktoken) {
             updateStatus('ready', '✅ Ready to compare formats!');
             document.getElementById('compare-btn').disabled = false;
+            
+            // Auto-load a sample example on page load
+            setTimeout(() => {
+                loadExample('user-list'); // Load the user list example by default
+            }, 1000);
         }
         
     </script>
