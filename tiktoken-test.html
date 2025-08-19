@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Token Comparison Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.loading {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        .status.ready {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+        .status.failed {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .formats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .format-section {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .format-section.active {
+            border-color: #4CAF50;
+            background: #f1f8e9;
+        }
+        .format-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .format-icon {
+            font-size: 20px;
+        }
+        .format-textarea {
+            width: 100%;
+            height: 300px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .format-textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .control-group input[type="checkbox"] {
+            margin: 0;
+            transform: scale(1.2);
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        select {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .result-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+        .result-card h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .metric-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .metric-value {
+            color: #333;
+        }
+        .comparison-table {
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .comparison-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        .comparison-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        .best-value {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .worst-value {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #d32f2f;
+            margin-bottom: 20px;
+        }
+        .sample-data-btn {
+            background-color: #2196F3;
+            margin-left: 10px;
+        }
+        .sample-data-btn:hover {
+            background-color: #1976D2;
+        }
+        .tokens-visualization {
+            margin-top: 30px;
+        }
+        .tokens-visualization h3 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .tokens-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .token-format-section {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+        .token-format-section h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tokens-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        .token {
+            display: inline-block;
+            margin: 2px;
+            padding: 3px 7px;
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .token:hover {
+            background-color: #bbdefb;
+            border-color: #90caf9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .token.special {
+            background-color: #fff3e0;
+            border-color: #ffcc02;
+            color: #ef6c00;
+        }
+        .token.whitespace {
+            background-color: #f3e5f5;
+            border-color: #ce93d8;
+            color: #8e24aa;
+        }
+        .token.number {
+            background-color: #e8f5e8;
+            border-color: #a5d6a7;
+            color: #2e7d32;
+        }
+        .token.string {
+            background-color: #fce4ec;
+            border-color: #f8bbd9;
+            color: #c2185b;
+        }
+        .format-toggle-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .format-toggle-controls label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .format-toggle-controls label:hover {
+            background-color: #e0e0e0;
+        }
+        .format-toggle-controls input[type="radio"] {
+            margin: 0;
+            transform: scale(1.2);
+        }
+        .savings-positive {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .savings-none {
+            color: #666;
+        }
+        .token-versions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .token-version {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .token-version h5 {
+            margin: 0 0 10px 0;
+            color: #555;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Format Token Comparison Tool</h1>
+        
+        <div id="library-status" class="status loading">
+            ⏳ Initializing js-tiktoken library...
+        </div>
+
+        <div class="formats-container">
+            <div class="format-section" id="json-section">
+                <h3><span class="format-icon">📄</span>JSON Format</h3>
+                <textarea 
+                    id="json-input" 
+                    class="format-textarea" 
+                    placeholder="Enter or paste JSON data here..."
+                    oninput="handleFormatChange('json')"
+                ></textarea>
+            </div>
+            
+            <div class="format-section" id="xml-section">
+                <h3><span class="format-icon">🏷️</span>XML Format</h3>
+                <textarea 
+                    id="xml-input" 
+                    class="format-textarea" 
+                    placeholder="Enter or paste XML data here..."
+                    oninput="handleFormatChange('xml')"
+                ></textarea>
+            </div>
+            
+            <div class="format-section" id="yaml-section">
+                <h3><span class="format-icon">📝</span>YAML Format</h3>
+                <textarea 
+                    id="yaml-input" 
+                    class="format-textarea" 
+                    placeholder="Enter or paste YAML data here..."
+                    oninput="handleFormatChange('yaml')"
+                ></textarea>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="encoding-select">Encoding:</label>
+                <select id="encoding-select">
+                    <option value="gpt2">GPT-2</option>
+                    <option value="r50k_base">GPT-3</option>
+                    <option value="p50k_base">Codex</option>
+                    <option value="cl100k_base">GPT-3.5/GPT-4</option>
+                    <option value="o200k_base" selected>GPT-4o</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="example-select">Examples:</label>
+                <select id="example-select" onchange="loadExample()">
+                    <option value="">Choose an example...</option>
+                    <optgroup label="Small Examples">
+                        <option value="simple-user">👤 Simple User Profile</option>
+                        <option value="product">📦 Product Info</option>
+                        <option value="config">⚙️ Basic Config</option>
+                        <option value="api-response">🔌 API Response</option>
+                    </optgroup>
+                    <optgroup label="Medium Examples">
+                        <option value="user-list">👥 User List</option>
+                        <option value="order">🛒 E-commerce Order</option>
+                        <option value="blog-post">📝 Blog Post</option>
+                        <option value="analytics">📊 Analytics Data</option>
+                    </optgroup>
+                    <optgroup label="Large Examples">
+                        <option value="company-data">🏢 Company Database</option>
+                        <option value="survey-response">📋 Survey Response</option>
+                        <option value="system-logs">📋 System Logs</option>
+                        <option value="complex-config">🔧 Complex Configuration</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <button id="compare-btn" onclick="compareFormats()" disabled>
+                🔍 Compare Token Counts
+            </button>
+            
+            <button class="sample-data-btn" onclick="loadSampleData()">
+                📋 Load Sample Data
+            </button>
+            
+            <button class="sample-data-btn" onclick="clearAllData()">
+                🗑️ Clear All
+            </button>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="results" class="results" style="display: none;">
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Format</th>
+                            <th>Formatted Tokens</th>
+                            <th>Minified Tokens</th>
+                            <th>Token Savings</th>
+                            <th>Formatted Chars</th>
+                            <th>Minified Chars</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>📄 JSON</strong></td>
+                            <td id="table-json-tokens-formatted">-</td>
+                            <td id="table-json-tokens-minified">-</td>
+                            <td id="table-json-savings">-</td>
+                            <td id="table-json-chars-formatted">-</td>
+                            <td id="table-json-chars-minified">-</td>
+                            <td id="table-json-best">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🏷️ XML</strong></td>
+                            <td id="table-xml-tokens-formatted">-</td>
+                            <td id="table-xml-tokens-minified">-</td>
+                            <td id="table-xml-savings">-</td>
+                            <td id="table-xml-chars-formatted">-</td>
+                            <td id="table-xml-chars-minified">-</td>
+                            <td id="table-xml-best">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>📝 YAML</strong></td>
+                            <td id="table-yaml-tokens-formatted">-</td>
+                            <td id="table-yaml-tokens-minified">-</td>
+                            <td id="table-yaml-savings">-</td>
+                            <td id="table-yaml-chars-formatted">-</td>
+                            <td id="table-yaml-chars-minified">-</td>
+                            <td id="table-yaml-best">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Token Visualization Section -->
+            <div class="tokens-visualization">
+                <h3>🔍 Token Breakdown by Format</h3>
+                
+                <div class="tokens-grid">
+                    <div class="token-format-section" id="json-tokens-section" style="display: none;">
+                        <h4><span class="format-icon">📄</span>JSON Tokens</h4>
+                        <div class="token-versions">
+                            <div class="token-version">
+                                <h5>Formatted (<span id="json-formatted-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="json-tokens-formatted-display"></div>
+                            </div>
+                            <div class="token-version">
+                                <h5>Minified (<span id="json-minified-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="json-tokens-minified-display"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="token-format-section" id="xml-tokens-section" style="display: none;">
+                        <h4><span class="format-icon">🏷️</span>XML Tokens</h4>
+                        <div class="token-versions">
+                            <div class="token-version">
+                                <h5>Formatted (<span id="xml-formatted-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="xml-tokens-formatted-display"></div>
+                            </div>
+                            <div class="token-version">
+                                <h5>Minified (<span id="xml-minified-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="xml-tokens-minified-display"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="token-format-section" id="yaml-tokens-section" style="display: none;">
+                        <h4><span class="format-icon">📝</span>YAML Tokens</h4>
+                        <div class="token-versions">
+                            <div class="token-version">
+                                <h5>Formatted (<span id="yaml-formatted-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="yaml-tokens-formatted-display"></div>
+                            </div>
+                            <div class="token-version">
+                                <h5>Minified (<span id="yaml-minified-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="yaml-tokens-minified-display"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load js-yaml library for YAML parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    
+    <script type="module">
+        // Import Tiktoken from ESM
+        let Tiktoken;
+        let isConverting = false; // Prevent infinite conversion loops
+        
+        try {
+            // Try importing from esm.sh
+            const module = await import('https://esm.sh/js-tiktoken@1.0.21/lite');
+            Tiktoken = module.Tiktoken;
+            console.log('Successfully loaded js-tiktoken from esm.sh');
+        } catch (error) {
+            console.error('Failed to load from esm.sh:', error);
+            try {
+                // Fallback to jsdelivr
+                const module = await import('https://cdn.jsdelivr.net/npm/js-tiktoken@1.0.21/+esm');
+                Tiktoken = module.Tiktoken;
+                console.log('Successfully loaded js-tiktoken from jsdelivr');
+            } catch (error2) {
+                console.error('Failed to load from jsdelivr:', error2);
+                updateStatus('failed', '❌ Failed to load js-tiktoken library. Please check your internet connection.');
+                throw error2;
+            }
+        }
+        
+        // Update status
+        function updateStatus(type, message) {
+            const statusDiv = document.getElementById('library-status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+        }
+        
+        // Cache for loaded encodings
+        const encodingCache = {};
+        
+        // Encoding to CDN URL mapping
+        const encodingUrls = {
+            'gpt2': 'https://tiktoken.pages.dev/js/gpt2.json',
+            'r50k_base': 'https://tiktoken.pages.dev/js/r50k_base.json',
+            'p50k_base': 'https://tiktoken.pages.dev/js/p50k_base.json',
+            'cl100k_base': 'https://tiktoken.pages.dev/js/cl100k_base.json',
+            'o200k_base': 'https://tiktoken.pages.dev/js/o200k_base.json'
+        };
+
+        async function loadEncoding(encodingName) {
+            if (encodingCache[encodingName]) {
+                return encodingCache[encodingName];
+            }
+
+            try {
+                console.log(`Loading encoding: ${encodingName}`);
+                const response = await fetch(encodingUrls[encodingName]);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load encoding: ${response.status} ${response.statusText}`);
+                }
+                
+                const encodingData = await response.json();
+                encodingCache[encodingName] = encodingData;
+                return encodingData;
+            } catch (error) {
+                console.error('Error loading encoding:', error);
+                throw error;
+            }
+        }
+
+        // Format conversion functions
+        function jsonToXml(obj, rootName = 'root') {
+            function objectToXml(obj, indent = '  ') {
+                let xml = '';
+                for (const key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        const value = obj[key];
+                        if (Array.isArray(value)) {
+                            for (const item of value) {
+                                xml += `${indent}<${key}>${typeof item === 'object' ? '\n' + objectToXml(item, indent + '  ') + indent : item}</${key}>\n`;
+                            }
+                        } else if (typeof value === 'object' && value !== null) {
+                            xml += `${indent}<${key}>\n${objectToXml(value, indent + '  ')}${indent}</${key}>\n`;
+                        } else {
+                            xml += `${indent}<${key}>${value}</${key}>\n`;
+                        }
+                    }
+                }
+                return xml;
+            }
+            
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<${rootName}>\n${objectToXml(obj)}</${rootName}>`;
+        }
+
+        function xmlToJson(xmlString) {
+            // Simple XML to JSON converter (basic implementation)
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+            
+            function xmlNodeToObject(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return node.nodeValue.trim();
+                }
+                
+                const obj = {};
+                
+                // Handle attributes
+                if (node.attributes && node.attributes.length > 0) {
+                    obj['@attributes'] = {};
+                    for (let i = 0; i < node.attributes.length; i++) {
+                        obj['@attributes'][node.attributes[i].name] = node.attributes[i].value;
+                    }
+                }
+                
+                // Handle child nodes
+                const children = {};
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    const child = node.childNodes[i];
+                    if (child.nodeType === Node.ELEMENT_NODE) {
+                        const childObj = xmlNodeToObject(child);
+                        if (children[child.nodeName]) {
+                            if (!Array.isArray(children[child.nodeName])) {
+                                children[child.nodeName] = [children[child.nodeName]];
+                            }
+                            children[child.nodeName].push(childObj);
+                        } else {
+                            children[child.nodeName] = childObj;
+                        }
+                    } else if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim()) {
+                        if (!obj['#text']) obj['#text'] = '';
+                        obj['#text'] += child.nodeValue.trim();
+                    }
+                }
+                
+                return Object.keys(children).length > 0 ? { ...obj, ...children } : (obj['#text'] || obj);
+            }
+            
+            return xmlNodeToObject(xmlDoc.documentElement);
+        }
+
+        // Minification functions - separate from conversion
+        function minifyJson(jsonString) {
+            try {
+                const parsed = JSON.parse(jsonString);
+                return JSON.stringify(parsed);
+            } catch (e) {
+                return jsonString;
+            }
+        }
+
+        function minifyXml(xmlString) {
+            return xmlString
+                .replace(/>\s+</g, '><')  // Remove whitespace between tags
+                .replace(/\n\s*/g, '')    // Remove newlines and indentation
+                .replace(/\s+/g, ' ')     // Collapse multiple spaces to single space
+                .trim();
+        }
+
+        function minifyYaml(yamlString) {
+            try {
+                const parsed = jsyaml.load(yamlString);
+                return jsyaml.dump(parsed, { 
+                    indent: 2, 
+                    lineWidth: -1,
+                    flowLevel: 2  // Use flow style for arrays/objects when compact
+                }).trim();
+            } catch (e) {
+                return yamlString;
+            }
+        }
+
+        // Remove the toggleMinification function since we don't need it anymore
+
+        // Handle format changes and conversions
+        window.handleFormatChange = function(changedFormat) {
+            if (isConverting) return;
+            isConverting = true;
+            
+            try {
+                const jsonInput = document.getElementById('json-input');
+                const xmlInput = document.getElementById('xml-input');
+                const yamlInput = document.getElementById('yaml-input');
+                
+                // Clear active states
+                document.querySelectorAll('.format-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Mark the changed format as active
+                document.getElementById(`${changedFormat}-section`).classList.add('active');
+                
+                let data;
+                
+                if (changedFormat === 'json') {
+                    const jsonText = jsonInput.value.trim();
+                    if (!jsonText) {
+                        xmlInput.value = '';
+                        yamlInput.value = '';
+                        return;
+                    }
+                    
+                    try {
+                        data = JSON.parse(jsonText);
+                        xmlInput.value = jsonToXml(data);
+                        yamlInput.value = jsyaml.dump(data, { indent: 2 });
+                    } catch (e) {
+                        // Invalid JSON, clear other formats
+                        xmlInput.value = '';
+                        yamlInput.value = '';
+                    }
+                    
+                } else if (changedFormat === 'xml') {
+                    const xmlText = xmlInput.value.trim();
+                    if (!xmlText) {
+                        jsonInput.value = '';
+                        yamlInput.value = '';
+                        return;
+                    }
+                    
+                    try {
+                        data = xmlToJson(xmlText);
+                        jsonInput.value = JSON.stringify(data, null, 2);
+                        yamlInput.value = jsyaml.dump(data, { indent: 2 });
+                    } catch (e) {
+                        // Invalid XML, clear other formats
+                        jsonInput.value = '';
+                        yamlInput.value = '';
+                    }
+                    
+                } else if (changedFormat === 'yaml') {
+                    const yamlText = yamlInput.value.trim();
+                    if (!yamlText) {
+                        jsonInput.value = '';
+                        xmlInput.value = '';
+                        return;
+                    }
+                    
+                    try {
+                        data = jsyaml.load(yamlText);
+                        jsonInput.value = JSON.stringify(data, null, 2);
+                        xmlInput.value = jsonToXml(data);
+                    } catch (e) {
+                        // Invalid YAML, clear other formats
+                        jsonInput.value = '';
+                        xmlInput.value = '';
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Conversion error:', error);
+            } finally {
+                isConverting = false;
+            }
+        }
+
+        // Compare formats function
+        window.compareFormats = async function() {
+            const compareBtn = document.getElementById('compare-btn');
+            const resultsDiv = document.getElementById('results');
+            const errorDiv = document.getElementById('error');
+            
+            const jsonText = document.getElementById('json-input').value.trim();
+            const xmlText = document.getElementById('xml-input').value.trim();
+            const yamlText = document.getElementById('yaml-input').value.trim();
+            
+            if (!jsonText && !xmlText && !yamlText) {
+                showError('Please enter data in at least one format.');
+                return;
+            }
+            
+            compareBtn.disabled = true;
+            compareBtn.textContent = '⏳ Analyzing...';
+            errorDiv.style.display = 'none';
+            
+            try {
+                const selectedEncoding = document.getElementById('encoding-select').value;
+                const encodingData = await loadEncoding(selectedEncoding);
+                const encoder = new Tiktoken(encodingData);
+                
+                const results = {};
+                
+                // Analyze each format - calculate both formatted and minified versions
+                if (jsonText) {
+                    const minifiedText = minifyJson(jsonText);
+                    
+                    // Formatted version
+                    const formattedTokens = encoder.encode(jsonText);
+                    const formattedDecodedTokens = formattedTokens.map(token => encoder.decode([token]));
+                    
+                    // Minified version
+                    const minifiedTokens = encoder.encode(minifiedText);
+                    const minifiedDecodedTokens = minifiedTokens.map(token => encoder.decode([token]));
+                    
+                    results.json = {
+                        formatted: {
+                            tokens: formattedTokens.length,
+                            chars: jsonText.length,
+                            text: jsonText,
+                            tokenIds: formattedTokens,
+                            decodedTokens: formattedDecodedTokens
+                        },
+                        minified: {
+                            tokens: minifiedTokens.length,
+                            chars: minifiedText.length,
+                            text: minifiedText,
+                            tokenIds: minifiedTokens,
+                            decodedTokens: minifiedDecodedTokens
+                        },
+                        savings: formattedTokens.length - minifiedTokens.length
+                    };
+                }
+                
+                if (xmlText) {
+                    const minifiedText = minifyXml(xmlText);
+                    
+                    // Formatted version
+                    const formattedTokens = encoder.encode(xmlText);
+                    const formattedDecodedTokens = formattedTokens.map(token => encoder.decode([token]));
+                    
+                    // Minified version
+                    const minifiedTokens = encoder.encode(minifiedText);
+                    const minifiedDecodedTokens = minifiedTokens.map(token => encoder.decode([token]));
+                    
+                    results.xml = {
+                        formatted: {
+                            tokens: formattedTokens.length,
+                            chars: xmlText.length,
+                            text: xmlText,
+                            tokenIds: formattedTokens,
+                            decodedTokens: formattedDecodedTokens
+                        },
+                        minified: {
+                            tokens: minifiedTokens.length,
+                            chars: minifiedText.length,
+                            text: minifiedText,
+                            tokenIds: minifiedTokens,
+                            decodedTokens: minifiedDecodedTokens
+                        },
+                        savings: formattedTokens.length - minifiedTokens.length
+                    };
+                }
+                
+                if (yamlText) {
+                    const minifiedText = minifyYaml(yamlText);
+                    
+                    // Formatted version
+                    const formattedTokens = encoder.encode(yamlText);
+                    const formattedDecodedTokens = formattedTokens.map(token => encoder.decode([token]));
+                    
+                    // Minified version
+                    const minifiedTokens = encoder.encode(minifiedText);
+                    const minifiedDecodedTokens = minifiedTokens.map(token => encoder.decode([token]));
+                    
+                    results.yaml = {
+                        formatted: {
+                            tokens: formattedTokens.length,
+                            chars: yamlText.length,
+                            text: yamlText,
+                            tokenIds: formattedTokens,
+                            decodedTokens: formattedDecodedTokens
+                        },
+                        minified: {
+                            tokens: minifiedTokens.length,
+                            chars: minifiedText.length,
+                            text: minifiedText,
+                            tokenIds: minifiedTokens,
+                            decodedTokens: minifiedDecodedTokens
+                        },
+                        savings: formattedTokens.length - minifiedTokens.length
+                    };
+                }
+                
+                displayResults(results);
+                resultsDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Comparison error:', error);
+                showError(`Error: ${error.message}`);
+            } finally {
+                compareBtn.disabled = false;
+                compareBtn.textContent = '🔍 Compare Token Counts';
+            }
+        }
+
+        function displayResults(results) {
+            // Update table rows only
+            Object.keys(results).forEach(format => {
+                const result = results[format];
+                
+                // Update table rows
+                document.getElementById(`table-${format}-tokens-formatted`).textContent = result.formatted.tokens;
+                document.getElementById(`table-${format}-tokens-minified`).textContent = result.minified.tokens;
+                document.getElementById(`table-${format}-chars-formatted`).textContent = result.formatted.chars;
+                document.getElementById(`table-${format}-chars-minified`).textContent = result.minified.chars;
+                
+                const tableSavingsElement = document.getElementById(`table-${format}-savings`);
+                if (result.savings > 0) {
+                    tableSavingsElement.textContent = `-${result.savings} (${((result.savings / result.formatted.tokens) * 100).toFixed(1)}%)`;
+                    tableSavingsElement.className = 'savings-positive';
+                } else {
+                    tableSavingsElement.textContent = 'None';
+                    tableSavingsElement.className = 'savings-none';
+                }
+            });
+            
+            // Find best formats for minified versions
+            const formats = Object.keys(results);
+            const minifiedTokenCounts = formats.map(f => results[f].minified.tokens);
+            const bestMinifiedTokens = Math.min(...minifiedTokenCounts);
+            
+            // Update best format recommendations
+            formats.forEach(format => {
+                const result = results[format];
+                const bestElement = document.getElementById(`table-${format}-best`);
+                
+                if (result.minified.tokens === bestMinifiedTokens) {
+                    bestElement.textContent = '🏆 Most Efficient';
+                    bestElement.className = 'best-value';
+                } else if (result.savings > 0) {
+                    bestElement.textContent = '📏 Good for minification';
+                } else {
+                    bestElement.textContent = '📝 Good for readability';
+                }
+            });
+            
+            // Store results globally for token visualization
+            window.currentResults = results;
+            
+            // Display both token visualizations side by side
+            displayAllTokenVisualizations();
+        }
+
+        function displayAllTokenVisualizations() {
+            if (!window.currentResults) return;
+            
+            Object.keys(window.currentResults).forEach(format => {
+                displayTokenVisualizationBoth(format, window.currentResults[format]);
+            });
+        }
+
+        function displayTokenVisualizationBoth(format, result) {
+            const tokenSection = document.getElementById(`${format}-tokens-section`);
+            
+            // Show the section
+            tokenSection.style.display = 'block';
+            
+            // Update formatted version
+            const formattedContainer = document.getElementById(`${format}-tokens-formatted-display`);
+            const formattedCount = document.getElementById(`${format}-formatted-count`);
+            formattedCount.textContent = result.formatted.tokens;
+            
+            formattedContainer.innerHTML = '';
+            result.formatted.decodedTokens.forEach((tokenText, index) => {
+                const tokenSpan = createTokenElement(tokenText, index, result.formatted.tokenIds[index]);
+                formattedContainer.appendChild(tokenSpan);
+            });
+            
+            // Update minified version
+            const minifiedContainer = document.getElementById(`${format}-tokens-minified-display`);
+            const minifiedCount = document.getElementById(`${format}-minified-count`);
+            minifiedCount.textContent = result.minified.tokens;
+            
+            minifiedContainer.innerHTML = '';
+            result.minified.decodedTokens.forEach((tokenText, index) => {
+                const tokenSpan = createTokenElement(tokenText, index, result.minified.tokenIds[index]);
+                minifiedContainer.appendChild(tokenSpan);
+            });
+        }
+
+        function createTokenElement(tokenText, index, tokenId) {
+            const tokenSpan = document.createElement('span');
+            tokenSpan.className = 'token';
+            
+            // Add special classes based on token content
+            if (tokenText.match(/^\s+$/)) {
+                tokenSpan.classList.add('whitespace');
+            } else if (tokenText.match(/^[\d\.]+$/)) {
+                tokenSpan.classList.add('number');
+            } else if (tokenText.match(/^["'].*["']$/)) {
+                tokenSpan.classList.add('string');
+            } else if (tokenText.match(/^[{}[\](),:;]$/)) {
+                tokenSpan.classList.add('special');
+            }
+            
+            // Display the token text, replacing whitespace with visible characters
+            let displayText = tokenText
+                .replace(/\n/g, '\\n')
+                .replace(/\t/g, '\\t')
+                .replace(/\r/g, '\\r')
+                .replace(/ /g, '·'); // Use middle dot for spaces
+            
+            // If the token is empty or only whitespace, show the actual whitespace character
+            if (tokenText === ' ') {
+                displayText = 'SPACE';
+            } else if (tokenText === '\n') {
+                displayText = 'NEWLINE';
+            } else if (tokenText === '\t') {
+                displayText = 'TAB';
+            } else if (displayText === '') {
+                displayText = 'EMPTY';
+            }
+            
+            tokenSpan.textContent = displayText;
+            tokenSpan.title = `Token ${index + 1}: "${tokenText}" (ID: ${tokenId})`;
+            
+            return tokenSpan;
+        }
+
+        // Load sample data
+        window.loadSampleData = function() {
+            const sampleData = {
+                users: [
+                    {
+                        id: 1,
+                        name: "John Doe",
+                        email: "john@example.com",
+                        age: 30,
+                        address: {
+                            street: "123 Main St",
+                            city: "New York",
+                            zipCode: "10001"
+                        },
+                        hobbies: ["reading", "swimming", "coding"],
+                        active: true
+                    },
+                    {
+                        id: 2,
+                        name: "Jane Smith",
+                        email: "jane@example.com",
+                        age: 25,
+                        address: {
+                            street: "456 Oak Ave",
+                            city: "Los Angeles",
+                            zipCode: "90210"
+                        },
+                        hobbies: ["painting", "hiking", "photography"],
+                        active: false
+                    }
+                ],
+                metadata: {
+                    totalUsers: 2,
+                    lastUpdated: "2024-08-19T10:30:00Z",
+                    version: "1.0"
+                }
+            };
+            
+            document.getElementById('json-input').value = JSON.stringify(sampleData, null, 2);
+            handleFormatChange('json');
+        }
+
+        // Example data sets
+        const examples = {
+            "simple-user": {
+                id: 123,
+                name: "Alice Johnson",
+                email: "alice@example.com",
+                active: true
+            },
+            
+            "product": {
+                id: "PROD-001",
+                name: "Wireless Headphones",
+                price: 99.99,
+                category: "Electronics",
+                inStock: true,
+                tags: ["wireless", "bluetooth", "music"]
+            },
+            
+            "config": {
+                appName: "MyApp",
+                version: "2.1.0",
+                debug: false,
+                maxConnections: 100,
+                timeout: 30
+            },
+            
+            "api-response": {
+                status: "success",
+                code: 200,
+                message: "Request processed successfully",
+                data: {
+                    userId: 456,
+                    sessionId: "sess_abc123",
+                    timestamp: "2024-08-19T15:30:00Z"
+                }
+            },
+            
+            "user-list": {
+                users: [
+                    {
+                        id: 1,
+                        name: "Emma Davis",
+                        email: "emma@company.com",
+                        role: "developer",
+                        department: "Engineering",
+                        skills: ["JavaScript", "Python", "React"],
+                        joinDate: "2023-01-15",
+                        salary: 85000,
+                        active: true
+                    },
+                    {
+                        id: 2,
+                        name: "Michael Wilson",
+                        email: "michael@company.com",
+                        role: "designer",
+                        department: "Creative",
+                        skills: ["Figma", "Photoshop", "UI/UX"],
+                        joinDate: "2022-09-08",
+                        salary: 75000,
+                        active: true
+                    },
+                    {
+                        id: 3,
+                        name: "Sarah Chen",
+                        email: "sarah@company.com",
+                        role: "manager",
+                        department: "Product",
+                        skills: ["Strategy", "Analytics", "Leadership"],
+                        joinDate: "2021-03-22",
+                        salary: 95000,
+                        active: false
+                    }
+                ],
+                pagination: {
+                    page: 1,
+                    limit: 3,
+                    total: 156,
+                    hasNext: true
+                }
+            },
+            
+            "order": {
+                orderId: "ORD-2024-08-001",
+                customerId: "CUST-789",
+                orderDate: "2024-08-19T14:25:00Z",
+                status: "processing",
+                customer: {
+                    name: "Robert Miller",
+                    email: "robert@email.com",
+                    phone: "+1-555-0123",
+                    address: {
+                        street: "789 Commerce Blvd",
+                        city: "Chicago",
+                        state: "IL",
+                        zipCode: "60601",
+                        country: "USA"
+                    }
+                },
+                items: [
+                    {
+                        productId: "PROD-101",
+                        name: "Gaming Laptop",
+                        quantity: 1,
+                        unitPrice: 1299.99,
+                        total: 1299.99
+                    },
+                    {
+                        productId: "PROD-205",
+                        name: "Wireless Mouse",
+                        quantity: 2,
+                        unitPrice: 29.99,
+                        total: 59.98
+                    }
+                ],
+                shipping: {
+                    method: "express",
+                    cost: 15.99,
+                    estimatedDelivery: "2024-08-21"
+                },
+                payment: {
+                    method: "credit_card",
+                    cardLast4: "4567",
+                    transactionId: "TXN-ABC123"
+                },
+                totals: {
+                    subtotal: 1359.97,
+                    tax: 108.80,
+                    shipping: 15.99,
+                    total: 1484.76
+                }
+            },
+            
+            "blog-post": {
+                id: "post-456",
+                title: "Understanding Modern Web Development",
+                slug: "understanding-modern-web-development",
+                author: {
+                    id: 12,
+                    name: "Tech Writer",
+                    email: "writer@blog.com",
+                    bio: "Passionate about sharing knowledge"
+                },
+                content: "Modern web development has evolved significantly over the past decade. From simple HTML pages to complex single-page applications, the landscape continues to change rapidly. Frameworks like React, Vue, and Angular have revolutionized how we build user interfaces, while Node.js has enabled JavaScript to run on the server side. The rise of TypeScript has brought static typing to JavaScript, improving code quality and developer experience. Cloud computing and serverless architectures are reshaping how we deploy and scale applications.",
+                tags: ["web-development", "javascript", "react", "technology"],
+                category: "Technology",
+                publishedAt: "2024-08-19T10:00:00Z",
+                updatedAt: "2024-08-19T10:15:00Z",
+                status: "published",
+                featured: true,
+                readTime: 5,
+                views: 1250,
+                likes: 89,
+                comments: [
+                    {
+                        id: 1,
+                        author: "Dev Reader",
+                        content: "Great insights! Really helpful for beginners.",
+                        createdAt: "2024-08-19T11:30:00Z"
+                    },
+                    {
+                        id: 2,
+                        author: "Code Enthusiast",
+                        content: "Looking forward to more posts like this.",
+                        createdAt: "2024-08-19T12:45:00Z"
+                    }
+                ]
+            },
+            
+            "analytics": {
+                reportId: "RPT-2024-08-19",
+                dateRange: {
+                    start: "2024-08-01",
+                    end: "2024-08-19"
+                },
+                website: {
+                    domain: "example.com",
+                    totalPageViews: 45623,
+                    uniqueVisitors: 12890,
+                    bounceRate: 0.34,
+                    avgSessionDuration: 180
+                },
+                topPages: [
+                    {
+                        path: "/",
+                        views: 8934,
+                        uniqueViews: 7123,
+                        avgTimeOnPage: 145
+                    },
+                    {
+                        path: "/products",
+                        views: 5678,
+                        uniqueViews: 4890,
+                        avgTimeOnPage: 210
+                    },
+                    {
+                        path: "/about",
+                        views: 3456,
+                        uniqueViews: 2987,
+                        avgTimeOnPage: 95
+                    }
+                ],
+                trafficSources: {
+                    organic: 0.45,
+                    direct: 0.28,
+                    social: 0.15,
+                    referral: 0.08,
+                    email: 0.04
+                },
+                devices: {
+                    desktop: 0.52,
+                    mobile: 0.41,
+                    tablet: 0.07
+                },
+                conversions: {
+                    goalCompletions: 234,
+                    conversionRate: 0.018,
+                    revenue: 12450.75
+                }
+            },
+            
+            "company-data": {
+                company: {
+                    id: "COMP-001",
+                    name: "TechCorp Industries",
+                    founded: "2015-03-15",
+                    headquarters: {
+                        address: "123 Innovation Drive",
+                        city: "San Francisco",
+                        state: "CA",
+                        zipCode: "94105",
+                        country: "USA"
+                    },
+                    industry: "Software Technology",
+                    employees: 2847,
+                    revenue: 145000000,
+                    publiclyTraded: true,
+                    stockSymbol: "TECH"
+                },
+                departments: [
+                    {
+                        id: "DEPT-ENG",
+                        name: "Engineering",
+                        head: "John Smith",
+                        employeeCount: 845,
+                        budget: 45000000,
+                        teams: [
+                            {
+                                name: "Frontend",
+                                members: 156,
+                                lead: "Alice Johnson",
+                                technologies: ["React", "Vue", "TypeScript", "Next.js"]
+                            },
+                            {
+                                name: "Backend",
+                                members: 203,
+                                lead: "Bob Wilson",
+                                technologies: ["Node.js", "Python", "Go", "PostgreSQL"]
+                            },
+                            {
+                                name: "DevOps",
+                                members: 89,
+                                lead: "Carol Davis",
+                                technologies: ["AWS", "Docker", "Kubernetes", "Terraform"]
+                            },
+                            {
+                                name: "Mobile",
+                                members: 124,
+                                lead: "David Brown",
+                                technologies: ["React Native", "Swift", "Kotlin", "Flutter"]
+                            }
+                        ]
+                    },
+                    {
+                        id: "DEPT-SALES",
+                        name: "Sales & Marketing",
+                        head: "Emma Martinez",
+                        employeeCount: 456,
+                        budget: 25000000,
+                        regions: [
+                            {
+                                name: "North America",
+                                revenue: 89000000,
+                                salesReps: 178
+                            },
+                            {
+                                name: "Europe",
+                                revenue: 34000000,
+                                salesReps: 134
+                            },
+                            {
+                                name: "Asia Pacific",
+                                revenue: 22000000,
+                                salesReps: 98
+                            }
+                        ]
+                    }
+                ],
+                products: [
+                    {
+                        id: "PROD-CLOUD",
+                        name: "CloudSync Pro",
+                        category: "SaaS Platform",
+                        price: 99.99,
+                        customers: 12567,
+                        features: [
+                            "Real-time synchronization",
+                            "Advanced security",
+                            "API integrations",
+                            "Custom workflows",
+                            "Analytics dashboard"
+                        ]
+                    },
+                    {
+                        id: "PROD-MOBILE",
+                        name: "MobileFirst SDK",
+                        category: "Developer Tools",
+                        price: 299.99,
+                        customers: 3456,
+                        features: [
+                            "Cross-platform support",
+                            "Performance monitoring",
+                            "Crash reporting",
+                            "A/B testing",
+                            "Push notifications"
+                        ]
+                    }
+                ],
+                financials: {
+                    currentQuarter: {
+                        revenue: 38500000,
+                        expenses: 31200000,
+                        profit: 7300000,
+                        growthRate: 0.15
+                    },
+                    previousQuarter: {
+                        revenue: 33500000,
+                        expenses: 29800000,
+                        profit: 3700000,
+                        growthRate: 0.12
+                    }
+                }
+            },
+            
+            "survey-response": {
+                surveyId: "SURV-2024-SATISFACTION",
+                title: "Customer Satisfaction Survey",
+                respondent: {
+                    id: "RESP-789",
+                    demographicData: {
+                        age: 32,
+                        gender: "female",
+                        location: "Denver, CO",
+                        income: "75000-100000",
+                        education: "bachelor"
+                    },
+                    customerSince: "2022-04-15",
+                    totalPurchases: 847.50
+                },
+                responses: [
+                    {
+                        questionId: "Q1",
+                        question: "How satisfied are you with our product?",
+                        type: "rating",
+                        answer: 4,
+                        scale: "1-5"
+                    },
+                    {
+                        questionId: "Q2",
+                        question: "Which features do you use most often?",
+                        type: "multiple_choice",
+                        answer: ["dashboard", "reports", "integrations"],
+                        options: ["dashboard", "reports", "integrations", "mobile_app", "api"]
+                    },
+                    {
+                        questionId: "Q3",
+                        question: "What improvements would you like to see?",
+                        type: "open_text",
+                        answer: "I would love to see better mobile experience and more customization options for the dashboard. The current interface is good but could be more intuitive for new users."
+                    },
+                    {
+                        questionId: "Q4",
+                        question: "How likely are you to recommend us?",
+                        type: "nps",
+                        answer: 8,
+                        scale: "0-10"
+                    },
+                    {
+                        questionId: "Q5",
+                        question: "Rate the importance of each feature",
+                        type: "matrix",
+                        answer: {
+                            "ease_of_use": 5,
+                            "performance": 4,
+                            "customer_support": 4,
+                            "price": 3,
+                            "features": 5
+                        }
+                    }
+                ],
+                completedAt: "2024-08-19T16:45:00Z",
+                timeSpent: 420,
+                ipAddress: "192.168.1.100",
+                userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+                referralSource: "email_campaign"
+            },
+            
+            "system-logs": {
+                logSession: "LOG-2024-08-19-001",
+                system: {
+                    hostname: "web-server-01",
+                    environment: "production",
+                    version: "2.4.1",
+                    region: "us-west-2"
+                },
+                timeRange: {
+                    start: "2024-08-19T14:00:00Z",
+                    end: "2024-08-19T15:00:00Z"
+                },
+                entries: [
+                    {
+                        timestamp: "2024-08-19T14:00:15Z",
+                        level: "INFO",
+                        service: "auth-service",
+                        message: "User authentication successful",
+                        userId: "user_12345",
+                        sessionId: "sess_abcdef",
+                        requestId: "req_001",
+                        duration: 45
+                    },
+                    {
+                        timestamp: "2024-08-19T14:01:22Z",
+                        level: "WARN",
+                        service: "payment-service",
+                        message: "Payment processing delayed due to high volume",
+                        orderId: "ord_67890",
+                        amount: 299.99,
+                        requestId: "req_002",
+                        retryCount: 2
+                    },
+                    {
+                        timestamp: "2024-08-19T14:03:45Z",
+                        level: "ERROR",
+                        service: "notification-service",
+                        message: "Failed to send email notification",
+                        error: "SMTP connection timeout",
+                        recipient: "user@example.com",
+                        requestId: "req_003",
+                        stackTrace: "Error: SMTP timeout\n  at SMTPConnection.timeout\n  at Socket.emit"
+                    },
+                    {
+                        timestamp: "2024-08-19T14:05:30Z",
+                        level: "INFO",
+                        service: "api-gateway",
+                        message: "Rate limit applied",
+                        clientId: "client_xyz",
+                        endpoint: "/api/v1/users",
+                        rateLimit: "100 requests/minute",
+                        currentCount: 101
+                    }
+                ],
+                metrics: {
+                    totalRequests: 15670,
+                    errorRate: 0.024,
+                    avgResponseTime: 156,
+                    p95ResponseTime: 450,
+                    uptime: 0.9995
+                },
+                alerts: [
+                    {
+                        id: "ALERT-001",
+                        severity: "medium",
+                        message: "CPU usage above 80%",
+                        triggeredAt: "2024-08-19T14:15:00Z",
+                        resolved: false
+                    }
+                ]
+            },
+            
+            "complex-config": {
+                application: {
+                    name: "enterprise-platform",
+                    version: "3.2.1",
+                    environment: "production",
+                    cluster: "cluster-alpha"
+                },
+                database: {
+                    primary: {
+                        host: "db-primary.internal",
+                        port: 5432,
+                        name: "production_db",
+                        ssl: true,
+                        connectionPool: {
+                            min: 5,
+                            max: 50,
+                            acquireTimeoutMillis: 60000,
+                            idleTimeoutMillis: 30000
+                        }
+                    },
+                    replicas: [
+                        {
+                            host: "db-replica-1.internal",
+                            port: 5432,
+                            readOnly: true,
+                            weight: 0.6
+                        },
+                        {
+                            host: "db-replica-2.internal", 
+                            port: 5432,
+                            readOnly: true,
+                            weight: 0.4
+                        }
+                    ],
+                    redis: {
+                        host: "redis.internal",
+                        port: 6379,
+                        ttl: 3600,
+                        maxConnections: 100
+                    }
+                },
+                api: {
+                    baseUrl: "https://api.company.com",
+                    version: "v2",
+                    rateLimit: {
+                        requests: 1000,
+                        windowMs: 60000,
+                        skipSuccessfulRequests: false
+                    },
+                    auth: {
+                        type: "jwt",
+                        secret: "${JWT_SECRET}",
+                        expiresIn: "24h",
+                        issuer: "api.company.com"
+                    },
+                    cors: {
+                        origins: [
+                            "https://app.company.com",
+                            "https://admin.company.com"
+                        ],
+                        methods: ["GET", "POST", "PUT", "DELETE"],
+                        credentials: true
+                    }
+                },
+                monitoring: {
+                    logging: {
+                        level: "info",
+                        format: "json",
+                        destinations: [
+                            {
+                                type: "file",
+                                path: "/var/log/app.log",
+                                maxSize: "100MB",
+                                maxFiles: 10
+                            },
+                            {
+                                type: "elasticsearch",
+                                host: "logs.internal",
+                                index: "application-logs"
+                            }
+                        ]
+                    },
+                    metrics: {
+                        enabled: true,
+                        interval: 30,
+                        exporters: ["prometheus", "datadog"],
+                        customMetrics: [
+                            "business_transactions_total",
+                            "user_registrations_total",
+                            "revenue_generated"
+                        ]
+                    },
+                    healthChecks: [
+                        {
+                            name: "database",
+                            type: "tcp",
+                            target: "db-primary.internal:5432",
+                            interval: 30,
+                            timeout: 5
+                        },
+                        {
+                            name: "external_api",
+                            type: "http",
+                            target: "https://external-service.com/health",
+                            interval: 60,
+                            timeout: 10
+                        }
+                    ]
+                },
+                security: {
+                    encryption: {
+                        algorithm: "AES-256-GCM",
+                        keyRotation: "30d"
+                    },
+                    firewall: {
+                        allowedIPs: [
+                            "10.0.0.0/8",
+                            "172.16.0.0/12",
+                            "192.168.0.0/16"
+                        ],
+                        blockedCountries: ["XX", "YY"]
+                    },
+                    audit: {
+                        enabled: true,
+                        retentionDays: 365,
+                        sensitiveFields: ["password", "ssn", "credit_card"]
+                    }
+                },
+                features: {
+                    experimentalFeatures: {
+                        newDashboard: {
+                            enabled: false,
+                            rolloutPercentage: 0
+                        },
+                        aiAssistant: {
+                            enabled: true,
+                            rolloutPercentage: 25,
+                            targetGroups: ["beta_users", "premium_users"]
+                        }
+                    },
+                    integrations: {
+                        salesforce: {
+                            enabled: true,
+                            apiVersion: "v54.0",
+                            syncInterval: "15m"
+                        },
+                        slack: {
+                            enabled: true,
+                            webhook: "${SLACK_WEBHOOK}",
+                            channels: ["#alerts", "#deployments"]
+                        }
+                    }
+                }
+            }
+        };
+
+        // Load example function
+        window.loadExample = function() {
+            const selectElement = document.getElementById('example-select');
+            const selectedValue = selectElement.value;
+            
+            if (!selectedValue) return;
+            
+            const exampleData = examples[selectedValue];
+            if (exampleData) {
+                document.getElementById('json-input').value = JSON.stringify(exampleData, null, 2);
+                handleFormatChange('json');
+                
+                // Reset the dropdown
+                selectElement.value = '';
+            }
+        }
+
+        // Clear all data function
+        window.clearAllData = function() {
+            document.getElementById('json-input').value = '';
+            document.getElementById('xml-input').value = '';
+            document.getElementById('yaml-input').value = '';
+            document.getElementById('results').style.display = 'none';
+            
+            // Clear active states
+            document.querySelectorAll('.format-section').forEach(section => {
+                section.classList.remove('active');
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Enable the button and update status when library is loaded
+        if (Tiktoken) {
+            updateStatus('ready', '✅ Ready to compare formats!');
+            document.getElementById('compare-btn').disabled = false;
+        }
+        
+    </script>
+</body>
+</html>
