@@ -367,6 +367,45 @@
         .savings-none {
             color: #666;
         }
+        .medal-gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+            color: #333 !important;
+            font-weight: bold !important;
+            position: relative;
+        }
+        .medal-gold::after {
+            content: "🥇";
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 12px;
+        }
+        .medal-silver {
+            background: linear-gradient(135deg, #C0C0C0, #A8A8A8) !important;
+            color: #333 !important;
+            font-weight: bold !important;
+            position: relative;
+        }
+        .medal-silver::after {
+            content: "🥈";
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 12px;
+        }
+        .medal-bronze {
+            background: linear-gradient(135deg, #CD7F32, #B87333) !important;
+            color: #fff !important;
+            font-weight: bold !important;
+            position: relative;
+        }
+        .medal-bronze::after {
+            content: "🥉";
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 12px;
+        }
         .token-versions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -522,7 +561,6 @@
                             <th>Token Savings</th>
                             <th>Formatted Chars</th>
                             <th>Minified Chars</th>
-                            <th>Best For</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -533,7 +571,6 @@
                             <td id="table-json-savings">-</td>
                             <td id="table-json-chars-formatted">-</td>
                             <td id="table-json-chars-minified">-</td>
-                            <td id="table-json-best">-</td>
                         </tr>
                         <tr>
                             <td><strong>🏷️ XML</strong></td>
@@ -542,7 +579,6 @@
                             <td id="table-xml-savings">-</td>
                             <td id="table-xml-chars-formatted">-</td>
                             <td id="table-xml-chars-minified">-</td>
-                            <td id="table-xml-best">-</td>
                         </tr>
                         <tr>
                             <td><strong>📝 YAML</strong></td>
@@ -551,7 +587,6 @@
                             <td id="table-yaml-savings">-</td>
                             <td id="table-yaml-chars-formatted">-</td>
                             <td id="table-yaml-chars-minified">-</td>
-                            <td id="table-yaml-best">-</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1027,25 +1062,49 @@
                 }
             });
             
-            // Find best formats for minified versions
+            // Create ranking system based on token counts (lower is better)
             const formats = Object.keys(results);
-            const minifiedTokenCounts = formats.map(f => results[f].minified.tokens);
-            const bestMinifiedTokens = Math.min(...minifiedTokenCounts);
+            const allTokenCounts = [];
             
-            // Update best format recommendations
+            // Collect all token counts (both formatted and minified) with their cell IDs
             formats.forEach(format => {
                 const result = results[format];
-                const bestElement = document.getElementById(`table-${format}-best`);
-                
-                if (result.minified.tokens === bestMinifiedTokens) {
-                    bestElement.textContent = '🏆 Most Efficient';
-                    bestElement.className = 'best-value';
-                } else if (result.savings > 0) {
-                    bestElement.textContent = '📏 Good for minification';
-                } else {
-                    bestElement.textContent = '📝 Good for readability';
-                }
+                allTokenCounts.push({
+                    count: result.formatted.tokens,
+                    cellId: `table-${format}-tokens-formatted`,
+                    format: format,
+                    type: 'formatted'
+                });
+                allTokenCounts.push({
+                    count: result.minified.tokens,
+                    cellId: `table-${format}-tokens-minified`,
+                    format: format,
+                    type: 'minified'
+                });
             });
+            
+            // Sort by token count (ascending - lower is better)
+            allTokenCounts.sort((a, b) => a.count - b.count);
+            
+            // Clear all existing medal classes
+            allTokenCounts.forEach(item => {
+                const cell = document.getElementById(item.cellId);
+                cell.classList.remove('medal-gold', 'medal-silver', 'medal-bronze');
+            });
+            
+            // Assign medals to top 3 performers (lowest token counts)
+            if (allTokenCounts.length >= 1) {
+                const goldCell = document.getElementById(allTokenCounts[0].cellId);
+                goldCell.classList.add('medal-gold');
+            }
+            if (allTokenCounts.length >= 2) {
+                const silverCell = document.getElementById(allTokenCounts[1].cellId);
+                silverCell.classList.add('medal-silver');
+            }
+            if (allTokenCounts.length >= 3) {
+                const bronzeCell = document.getElementById(allTokenCounts[2].cellId);
+                bronzeCell.classList.add('medal-bronze');
+            }
             
             // Store results globally for token visualization
             window.currentResults = results;
