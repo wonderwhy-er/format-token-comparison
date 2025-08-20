@@ -537,9 +537,188 @@
             border-bottom: 1px solid rgba(255,255,255,0.3);
             transition: all 0.2s ease;
         }
-        .footer a:hover {
-            border-bottom-color: #fff;
-            transform: translateY(-1px);
+        .main-tabs {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            background: white;
+            border-bottom-color: #4CAF50;
+            color: #4CAF50;
+        }
+        .tab-button:hover {
+            background: #e8e8e8;
+        }
+        .tab-button.active:hover {
+            background: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .examples-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196F3;
+        }
+        .examples-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .examples-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .cross-model-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .api-keys-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #ff9800;
+        }
+        .api-keys-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .api-key-group {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .api-key-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .api-key-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .model-selection-section {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        .model-selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .model-group {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .model-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .model-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .cross-model-results {
+            margin-top: 30px;
+        }
+        .cross-model-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .cross-model-table th,
+        .cross-model-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .cross-model-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            color: #333;
+        }
+        .cross-model-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        .provider-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+        .format-header {
+            background: #e8f5e8;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .best-provider {
+            background-color: #e8f5e8 !important;
+            color: #2e7d32 !important;
+            font-weight: bold !important;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-ready {
+            background-color: #4caf50;
+        }
+        .status-error {
+            background-color: #f44336;
+        }
+        .status-loading {
+            background-color: #ff9800;
         }
     </style>
 </head>
@@ -547,10 +726,37 @@
     <div class="container">
         <h1>🔢 AI Token Efficiency: JSON vs XML vs YAML vs Markdown - Which Format Saves You More Money?</h1>
         
-        <div id="library-status" class="status loading">
-            ⏳ Initializing js-tiktoken library...
+        <!-- Examples Section - Shared -->
+        <div class="examples-section">
+            <h3><span class="format-icon">📚</span>Load Example Data</h3>
+            <div class="examples-controls">
+                <label for="example-select">Choose Example:</label>
+                <select id="example-select" onchange="loadExample()">
+                    <option value="">Choose an example...</option>
+                    <optgroup label="Small Examples">
+                        <option value="simple-user">👤 Simple User Profile</option>
+                        <option value="product">📦 Product Info</option>
+                        <option value="config">⚙️ Basic Config</option>
+                        <option value="api-response">🔌 API Response</option>
+                    </optgroup>
+                    <optgroup label="Medium Examples">
+                        <option value="user-list">👥 User List</option>
+                        <option value="order">🛒 E-commerce Order</option>
+                        <option value="blog-post">📝 Blog Post</option>
+                        <option value="analytics">📊 Analytics Data</option>
+                    </optgroup>
+                    <optgroup label="Large Examples">
+                        <option value="company-data">🏢 Company Database</option>
+                        <option value="survey-response">📋 Survey Response</option>
+                        <option value="system-logs">📋 System Logs</option>
+                        <option value="complex-config">🔧 Complex Configuration</option>
+                    </optgroup>
+                </select>
+                <button onclick="clearAllData()" class="sample-data-btn">🗑️ Clear All</button>
+            </div>
         </div>
 
+        <!-- Format Inputs - Shared -->
         <div class="formats-container">
             <div class="format-section" id="json-section">
                 <h3><span class="format-icon">📄</span>JSON Format</h3>
@@ -593,94 +799,459 @@
             </div>
         </div>
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="encoding-select">Encoding:</label>
-                <select id="encoding-select">
-                    <option value="gpt2">GPT-2</option>
-                    <option value="r50k_base">GPT-3</option>
-                    <option value="p50k_base">Codex</option>
-                    <option value="cl100k_base">GPT-3.5/GPT-4</option>
-                    <option value="o200k_base" selected>GPT-4o</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="example-select">Examples:</label>
-                <select id="example-select" onchange="loadExample()">
-                    <option value="">Choose an example...</option>
-                    <optgroup label="Small Examples">
-                        <option value="simple-user">👤 Simple User Profile</option>
-                        <option value="product">📦 Product Info</option>
-                        <option value="config">⚙️ Basic Config</option>
-                        <option value="api-response">🔌 API Response</option>
-                    </optgroup>
-                    <optgroup label="Medium Examples">
-                        <option value="user-list">👥 User List</option>
-                        <option value="order">🛒 E-commerce Order</option>
-                        <option value="blog-post">📝 Blog Post</option>
-                        <option value="analytics">📊 Analytics Data</option>
-                    </optgroup>
-                    <optgroup label="Large Examples">
-                        <option value="company-data">🏢 Company Database</option>
-                        <option value="survey-response">📋 Survey Response</option>
-                        <option value="system-logs">📋 System Logs</option>
-                        <option value="complex-config">🔧 Complex Configuration</option>
-                    </optgroup>
-                </select>
-            </div>
-            
-            <button id="compare-btn" onclick="compareFormats()" disabled>
-                🔍 Compare Token Counts
+        <!-- Main Tabs -->
+        <div class="main-tabs">
+            <button class="tab-button active" onclick="switchTab('format-analysis')">
+                📊 Format Analysis (OpenAI Models)
+            </button>
+            <button class="tab-button" onclick="switchTab('cross-model')">
+                🤖 Cross-Model Comparison
             </button>
         </div>
-
-        <div id="error" class="error" style="display: none;"></div>
-
-        <div id="results" class="results" style="display: none;">
-            <div class="comparison-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Format</th>
-                            <th>Formatted Tokens</th>
-                            <th>Minified Tokens</th>
-                            <th>Formatted Chars</th>
-                            <th>Minified Chars</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>📄 JSON</strong></td>
-                            <td id="table-json-tokens-formatted">-</td>
-                            <td id="table-json-tokens-minified">-</td>
-                            <td id="table-json-chars-formatted">-</td>
-                            <td id="table-json-chars-minified">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>🏷️ XML</strong></td>
-                            <td id="table-xml-tokens-formatted">-</td>
-                            <td id="table-xml-tokens-minified">-</td>
-                            <td id="table-xml-chars-formatted">-</td>
-                            <td id="table-xml-chars-minified">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>📝 YAML</strong></td>
-                            <td id="table-yaml-tokens-formatted">-</td>
-                            <td id="table-yaml-tokens-minified">-</td>
-                            <td id="table-yaml-chars-formatted">-</td>
-                            <td id="table-yaml-chars-minified">-</td>
-                        </tr>
-                        <tr>
-                            <td><strong>📄 Markdown</strong></td>
-                            <td id="table-markdown-tokens-formatted">-</td>
-                            <td id="table-markdown-tokens-minified">-</td>
-                            <td id="table-markdown-chars-formatted">-</td>
-                            <td id="table-markdown-chars-minified">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Tab 1: Format Analysis (OpenAI Models) -->
+        <div id="format-analysis-tab" class="tab-content active">
+            <div id="library-status" class="status loading">
+                ⏳ Initializing js-tiktoken library...
             </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="encoding-select">OpenAI Encoding:</label>
+                    <select id="encoding-select">
+                        <option value="gpt2">GPT-2</option>
+                        <option value="r50k_base">GPT-3</option>
+                        <option value="p50k_base">Codex</option>
+                        <option value="cl100k_base">GPT-3.5/GPT-4</option>
+                        <option value="o200k_base" selected>GPT-4o</option>
+                    </select>
+                </div>
+                
+                <button id="compare-btn" onclick="compareFormats()" disabled>
+                    🔍 Compare Token Counts
+                </button>
+            </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+
+            <div id="results" class="results" style="display: none;">
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Format</th>
+                                <th>Formatted Tokens</th>
+                                <th>Minified Tokens</th>
+                                <th>Formatted Chars</th>
+                                <th>Minified Chars</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>📄 JSON</strong></td>
+                                <td id="table-json-tokens-formatted">-</td>
+                                <td id="table-json-tokens-minified">-</td>
+                                <td id="table-json-chars-formatted">-</td>
+                                <td id="table-json-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏷️ XML</strong></td>
+                                <td id="table-xml-tokens-formatted">-</td>
+                                <td id="table-xml-tokens-minified">-</td>
+                                <td id="table-xml-chars-formatted">-</td>
+                                <td id="table-xml-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📝 YAML</strong></td>
+                                <td id="table-yaml-tokens-formatted">-</td>
+                                <td id="table-yaml-tokens-minified">-</td>
+                                <td id="table-yaml-chars-formatted">-</td>
+                                <td id="table-yaml-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📄 Markdown</strong></td>
+                                <td id="table-markdown-tokens-formatted">-</td>
+                                <td id="table-markdown-tokens-minified">-</td>
+                                <td id="table-markdown-chars-formatted">-</td>
+                                <td id="table-markdown-chars-minified">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Token Visualization Section - MOVED TO TAB 1 -->
+                <div class="tokens-visualization">
+                    <h3>🔍 Token Breakdown by Format</h3>
+                    
+                    <div class="tokens-grid">
+                        <div class="token-format-section" id="json-tokens-section" style="display: none;">
+                            <h4><span class="format-icon">📄</span>JSON Tokens</h4>
+                            <div class="token-versions">
+                                <div class="token-version tokens-view-active" id="json-formatted-version">
+                                    <h5>Formatted (<span id="json-formatted-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="json-formatted-view" value="text" 
+                                                   onchange="toggleTokenView('json', 'formatted', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="json-formatted-view" value="tokens" checked
+                                                   onchange="toggleTokenView('json', 'formatted', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="json-text-formatted-display"></div>
+                                    <div class="tokens-container" id="json-tokens-formatted-display"></div>
+                                </div>
+                                <div class="token-version tokens-view-active" id="json-minified-version">
+                                    <h5>Minified (<span id="json-minified-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="json-minified-view" value="text" 
+                                                   onchange="toggleTokenView('json', 'minified', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="json-minified-view" value="tokens" checked
+                                                   onchange="toggleTokenView('json', 'minified', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="json-text-minified-display"></div>
+                                    <div class="tokens-container" id="json-tokens-minified-display"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="token-format-section" id="xml-tokens-section" style="display: none;">
+                            <h4><span class="format-icon">🏷️</span>XML Tokens</h4>
+                            <div class="token-versions">
+                                <div class="token-version tokens-view-active" id="xml-formatted-version">
+                                    <h5>Formatted (<span id="xml-formatted-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="xml-formatted-view" value="text" 
+                                                   onchange="toggleTokenView('xml', 'formatted', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="xml-formatted-view" value="tokens" checked
+                                                   onchange="toggleTokenView('xml', 'formatted', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="xml-text-formatted-display"></div>
+                                    <div class="tokens-container" id="xml-tokens-formatted-display"></div>
+                                </div>
+                                <div class="token-version tokens-view-active" id="xml-minified-version">
+                                    <h5>Minified (<span id="xml-minified-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="xml-minified-view" value="text" 
+                                                   onchange="toggleTokenView('xml', 'minified', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="xml-minified-view" value="tokens" checked
+                                                   onchange="toggleTokenView('xml', 'minified', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="xml-text-minified-display"></div>
+                                    <div class="tokens-container" id="xml-tokens-minified-display"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="token-format-section" id="yaml-tokens-section" style="display: none;">
+                            <h4><span class="format-icon">📝</span>YAML Tokens</h4>
+                            <div class="token-versions">
+                                <div class="token-version tokens-view-active" id="yaml-formatted-version">
+                                    <h5>Formatted (<span id="yaml-formatted-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="yaml-formatted-view" value="text" 
+                                                   onchange="toggleTokenView('yaml', 'formatted', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yaml-formatted-view" value="tokens" checked
+                                                   onchange="toggleTokenView('yaml', 'formatted', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="yaml-text-formatted-display"></div>
+                                    <div class="tokens-container" id="yaml-tokens-formatted-display"></div>
+                                </div>
+                                <div class="token-version tokens-view-active" id="yaml-minified-version">
+                                    <h5>Minified (<span id="yaml-minified-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="yaml-minified-view" value="text" 
+                                                   onchange="toggleTokenView('yaml', 'minified', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="yaml-minified-view" value="tokens" checked
+                                                   onchange="toggleTokenView('yaml', 'minified', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="yaml-text-minified-display"></div>
+                                    <div class="tokens-container" id="yaml-tokens-minified-display"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="token-format-section" id="markdown-tokens-section" style="display: none;">
+                            <h4><span class="format-icon">📄</span>Markdown Tokens</h4>
+                            <div class="token-versions">
+                                <div class="token-version tokens-view-active" id="markdown-formatted-version">
+                                    <h5>Formatted (<span id="markdown-formatted-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="markdown-formatted-view" value="text" 
+                                                   onchange="toggleTokenView('markdown', 'formatted', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="markdown-formatted-view" value="tokens" checked
+                                                   onchange="toggleTokenView('markdown', 'formatted', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="markdown-text-formatted-display"></div>
+                                    <div class="tokens-container" id="markdown-tokens-formatted-display"></div>
+                                </div>
+                                <div class="token-version tokens-view-active" id="markdown-minified-version">
+                                    <h5>Minified (<span id="markdown-minified-count">0</span> tokens)</h5>
+                                    <div class="token-view-toggle">
+                                        <label>
+                                            <input type="radio" name="markdown-minified-view" value="text" 
+                                                   onchange="toggleTokenView('markdown', 'minified', this.value)">
+                                            📝 Text View
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="markdown-minified-view" value="tokens" checked
+                                                   onchange="toggleTokenView('markdown', 'minified', this.value)">
+                                            🔍 Token View
+                                        </label>
+                                    </div>
+                                    <div class="text-view-container" id="markdown-text-minified-display"></div>
+                                    <div class="tokens-container" id="markdown-tokens-minified-display"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div id="error" class="error" style="display: none;"></div>
+
+            <div id="results" class="results" style="display: none;">
+                <!-- Existing results content stays the same -->
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Format</th>
+                                <th>Formatted Tokens</th>
+                                <th>Minified Tokens</th>
+                                <th>Formatted Chars</th>
+                                <th>Minified Chars</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>📄 JSON</strong></td>
+                                <td id="table-json-tokens-formatted">-</td>
+                                <td id="table-json-tokens-minified">-</td>
+                                <td id="table-json-chars-formatted">-</td>
+                                <td id="table-json-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏷️ XML</strong></td>
+                                <td id="table-xml-tokens-formatted">-</td>
+                                <td id="table-xml-tokens-minified">-</td>
+                                <td id="table-xml-chars-formatted">-</td>
+                                <td id="table-xml-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📝 YAML</strong></td>
+                                <td id="table-yaml-tokens-formatted">-</td>
+                                <td id="table-yaml-tokens-minified">-</td>
+                                <td id="table-yaml-chars-formatted">-</td>
+                                <td id="table-yaml-chars-minified">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📄 Markdown</strong></td>
+                                <td id="table-markdown-tokens-formatted">-</td>
+                                <td id="table-markdown-tokens-minified">-</td>
+                                <td id="table-markdown-chars-formatted">-</td>
+                                <td id="table-markdown-chars-minified">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Rest of existing token visualization content... -->
+            </div>
+        </div>
+
+        <!-- Tab 2: Cross-Model Comparison -->
+        <div id="cross-model-tab" class="tab-content">
+            <div class="cross-model-section">
+                <!-- API Keys Section -->
+                <div class="api-keys-section">
+                    <h3><span class="format-icon">🔑</span>API Keys</h3>
+                    <div class="api-keys-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="api-key-group">
+                            <label for="gemini-api-key-cross">
+                                <span class="status-indicator status-ready"></span>
+                                Google Gemini API Key
+                            </label>
+                            <input type="password" id="gemini-api-key-cross" class="api-key-input" 
+                                   placeholder="Get from https://ai.google.dev" onchange="saveApiKey('gemini', this.value); loadGeminiModelsCross();">
+                        </div>
+                        <div class="api-key-group">
+                            <label for="claude-api-key-cross">
+                                <span class="status-indicator status-ready"></span>
+                                Anthropic Claude API Key
+                            </label>
+                            <input type="password" id="claude-api-key-cross" class="api-key-input" 
+                                   placeholder="Get from https://console.anthropic.com" onchange="saveApiKey('claude', this.value); loadClaudeModelsCross();">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Selection Section -->
+                <div class="model-selection-section">
+                    <h3><span class="format-icon">🤖</span>Model Selection</h3>
+                    
+                    <!-- Warning Box -->
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #fdcb6e;">
+                        <strong>⚠️ Note about Model Selection:</strong><br>
+                        In testing, Google Gemini and Anthropic Claude APIs return the <strong>same token counts regardless of which model is selected</strong>. 
+                        The token counting appears to use a shared tokenizer across models within each provider. 
+                        Model selection may still be useful for future API updates.
+                    </div>
+                    
+                    <div class="model-selection-grid">
+                        <div class="model-group">
+                            <label for="openai-model-select">OpenAI Model (using tiktoken)</label>
+                            <select id="openai-model-select" class="model-select">
+                                <option value="gpt-4o">GPT-4o</option>
+                                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            </select>
+                        </div>
+                        <div class="model-group">
+                            <label for="gemini-model-select">Google Gemini Model</label>
+                            <select id="gemini-model-select" class="model-select">
+                                <option value="">Enter API key to load models</option>
+                            </select>
+                        </div>
+                        <div class="model-group">
+                            <label for="claude-model-select">Anthropic Claude Model</label>
+                            <select id="claude-model-select" class="model-select">
+                                <option value="">Enter API key to load models</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compare Button -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <button id="cross-model-compare-btn" onclick="runCrossModelComparison()" 
+                            style="font-size: 18px; padding: 15px 30px;">
+                        🚀 Compare Across Models
+                    </button>
+                </div>
+
+                <!-- Cross-Model Results -->
+                <div id="cross-model-results" class="cross-model-results" style="display: none;">
+                    <h3>📊 Cross-Model Token Comparison Results</h3>
+                    <table class="cross-model-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Format</th>
+                                <th rowspan="2">Version</th>
+                                <th colspan="3" class="provider-header">Token Counts by Provider</th>
+                                <th rowspan="2">Best Choice</th>
+                            </tr>
+                            <tr>
+                                <th>🟢 OpenAI</th>
+                                <th>🔵 Gemini</th>
+                                <th>🟠 Claude</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2" class="format-header">📄 JSON</td>
+                                <td>Formatted</td>
+                                <td id="cross-json-formatted-openai">-</td>
+                                <td id="cross-json-formatted-gemini">-</td>
+                                <td id="cross-json-formatted-claude">-</td>
+                                <td id="cross-json-formatted-best">-</td>
+                            </tr>
+                            <tr>
+                                <td>Minified</td>
+                                <td id="cross-json-minified-openai">-</td>
+                                <td id="cross-json-minified-gemini">-</td>
+                                <td id="cross-json-minified-claude">-</td>
+                                <td id="cross-json-minified-best">-</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="format-header">🏷️ XML</td>
+                                <td>Formatted</td>
+                                <td id="cross-xml-formatted-openai">-</td>
+                                <td id="cross-xml-formatted-gemini">-</td>
+                                <td id="cross-xml-formatted-claude">-</td>
+                                <td id="cross-xml-formatted-best">-</td>
+                            </tr>
+                            <tr>
+                                <td>Minified</td>
+                                <td id="cross-xml-minified-openai">-</td>
+                                <td id="cross-xml-minified-gemini">-</td>
+                                <td id="cross-xml-minified-claude">-</td>
+                                <td id="cross-xml-minified-best">-</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="format-header">📝 YAML</td>
+                                <td>Formatted</td>
+                                <td id="cross-yaml-formatted-openai">-</td>
+                                <td id="cross-yaml-formatted-gemini">-</td>
+                                <td id="cross-yaml-formatted-claude">-</td>
+                                <td id="cross-yaml-formatted-best">-</td>
+                            </tr>
+                            <tr>
+                                <td>Minified</td>
+                                <td id="cross-yaml-minified-openai">-</td>
+                                <td id="cross-yaml-minified-gemini">-</td>
+                                <td id="cross-yaml-minified-claude">-</td>
+                                <td id="cross-yaml-minified-best">-</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" class="format-header">📄 Markdown</td>
+                                <td>Formatted</td>
+                                <td id="cross-markdown-formatted-openai">-</td>
+                                <td id="cross-markdown-formatted-gemini">-</td>
+                                <td id="cross-markdown-formatted-claude">-</td>
+                                <td id="cross-markdown-formatted-best">-</td>
+                            </tr>
+                            <tr>
+                                <td>Minified</td>
+                                <td id="cross-markdown-minified-openai">-</td>
+                                <td id="cross-markdown-minified-gemini">-</td>
+                                <td id="cross-markdown-minified-claude">-</td>
+                                <td id="cross-markdown-minified-best">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
             <!-- Token Visualization Section -->
             <div class="tokens-visualization">
@@ -862,9 +1433,11 @@
                 🔢 Powered by <a href="https://github.com/dqbd/tiktoken" target="_blank" rel="noopener noreferrer">js-tiktoken</a>
                 |
                 📊 Compare JSON, XML & YAML token efficiency
+                |
+                💻 <a href="https://github.com/wonderwhy-er/format-token-comparison" target="_blank" rel="noopener noreferrer">Source Code on GitHub</a>
             </p>
             <p class="footer-description">
-                Optimize your OpenAI API costs by choosing the most token-efficient data format for your applications.
+                Optimize your AI API costs by choosing the most token-efficient data format and provider combination for your applications.
             </p>
         </div>
     </footer>
@@ -2238,6 +2811,388 @@
                 loadExample('user-list'); // Load the user list example by default
             }, 1000);
         }
+
+        // Tab switching functionality
+        window.switchTab = function(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            // If switching to cross-model tab, check if we need to load models
+            if (tabName === 'cross-model') {
+                setTimeout(() => {
+                    // Load models if API keys are already saved
+                    if (crossModelApiKeys.gemini) {
+                        loadGeminiModelsCross();
+                    }
+                    if (crossModelApiKeys.claude) {
+                        loadClaudeModelsCross();
+                    }
+                }, 100);
+            }
+        }
+
+        // Cross-model API key management
+        const crossModelApiKeys = {
+            gemini: '',
+            claude: ''
+        };
+
+        window.saveApiKey = function(provider, apiKey) {
+            crossModelApiKeys[provider] = apiKey;
+            localStorage.setItem(`cross_model_${provider}_key`, apiKey);
+        }
+
+        function loadSavedApiKeys() {
+            Object.keys(crossModelApiKeys).forEach(provider => {
+                const saved = localStorage.getItem(`cross_model_${provider}_key`);
+                if (saved) {
+                    crossModelApiKeys[provider] = saved;
+                    const inputId = provider === 'gemini' ? 'gemini-api-key-cross' : 'claude-api-key-cross';
+                    const inputElement = document.getElementById(inputId);
+                    if (inputElement) {
+                        inputElement.value = saved;
+                    }
+                }
+            });
+        }
+
+        // Load Gemini models for cross-model tab
+        window.loadGeminiModelsCross = async function() {
+            const apiKey = crossModelApiKeys.gemini;
+            const modelSelect = document.getElementById('gemini-model-select');
+            
+            if (!apiKey) {
+                modelSelect.innerHTML = '<option value="">Enter API key first</option>';
+                return;
+            }
+
+            modelSelect.innerHTML = '<option value="">Loading models...</option>';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load models: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const models = data.models || [];
+                
+                modelSelect.innerHTML = '';
+                
+                const supportedModels = models.filter(model => {
+                    return model.supportedGenerationMethods && 
+                           model.supportedGenerationMethods.includes('generateContent') &&
+                           model.name && !model.name.includes('embedding');
+                });
+
+                if (supportedModels.length === 0) {
+                    modelSelect.innerHTML = '<option value="">No compatible models found</option>';
+                    return;
+                }
+
+                supportedModels
+                    .sort((a, b) => {
+                        const nameA = a.displayName || a.name.split('/').pop();
+                        const nameB = b.displayName || b.name.split('/').pop();
+                        return nameB.localeCompare(nameA);
+                    })
+                    .forEach(model => {
+                        const modelId = model.name.split('/').pop();
+                        const displayName = model.displayName || modelId;
+                        const option = document.createElement('option');
+                        option.value = modelId;
+                        option.textContent = displayName;
+                        modelSelect.appendChild(option);
+                    });
+
+            } catch (error) {
+                console.error('Error loading Gemini models:', error);
+                modelSelect.innerHTML = '<option value="">Error loading models</option>';
+            }
+        }
+
+        // Load Claude models for cross-model tab
+        window.loadClaudeModelsCross = async function() {
+            const apiKey = crossModelApiKeys.claude;
+            const modelSelect = document.getElementById('claude-model-select');
+            
+            if (!apiKey) {
+                modelSelect.innerHTML = '<option value="">Enter API key first</option>';
+                return;
+            }
+
+            modelSelect.innerHTML = '<option value="">Loading models...</option>';
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/models', {
+                    method: 'GET',
+                    headers: {
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load models: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const models = data.data || [];
+                
+                modelSelect.innerHTML = '';
+                
+                if (models.length === 0) {
+                    modelSelect.innerHTML = '<option value="">No models found</option>';
+                    return;
+                }
+
+                const modelGroups = {};
+                models.forEach(model => {
+                    let family = 'Other';
+                    
+                    if (model.id.includes('claude-4')) {
+                        family = 'Claude 4 (Latest)';
+                    } else if (model.id.includes('claude-3-5')) {
+                        family = 'Claude 3.5';
+                    } else if (model.id.includes('claude-3')) {
+                        family = 'Claude 3';
+                    }
+                    
+                    if (!modelGroups[family]) {
+                        modelGroups[family] = [];
+                    }
+                    modelGroups[family].push(model);
+                });
+
+                const groupOrder = ['Claude 4 (Latest)', 'Claude 3.5', 'Claude 3', 'Other'];
+                
+                groupOrder.forEach(groupName => {
+                    if (modelGroups[groupName]) {
+                        const group = document.createElement('optgroup');
+                        group.label = groupName;
+                        
+                        modelGroups[groupName]
+                            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                            .forEach(model => {
+                                const option = document.createElement('option');
+                                option.value = model.id;
+                                option.textContent = model.display_name || model.id;
+                                group.appendChild(option);
+                            });
+                        
+                        modelSelect.appendChild(group);
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error loading Claude models:', error);
+                
+                modelSelect.innerHTML = '';
+                const fallbackModels = [
+                    { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet (Fallback)' },
+                    { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku (Fallback)' }
+                ];
+                
+                fallbackModels.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Cross-model comparison function
+        window.runCrossModelComparison = async function() {
+            const compareBtn = document.getElementById('cross-model-compare-btn');
+            const resultsDiv = document.getElementById('cross-model-results');
+            
+            const jsonText = document.getElementById('json-input').value.trim();
+            const xmlText = document.getElementById('xml-input').value.trim();
+            const yamlText = document.getElementById('yaml-input').value.trim();
+            const markdownText = document.getElementById('markdown-input').value.trim();
+            
+            if (!jsonText && !xmlText && !yamlText) {
+                alert('Please load some example data first using the examples dropdown at the top.');
+                return;
+            }
+
+            compareBtn.disabled = true;
+            compareBtn.textContent = '⏳ Comparing across models...';
+
+            try {
+                const results = {};
+                
+                // Get selected models
+                const openaiModel = document.getElementById('openai-model-select').value;
+                const geminiModel = document.getElementById('gemini-model-select').value;
+                const claudeModel = document.getElementById('claude-model-select').value;
+
+                // Count tokens for each format and model
+                const formats = [
+                    { name: 'json', formatted: jsonText, minified: minifyJson(jsonText) },
+                    { name: 'xml', formatted: xmlText, minified: minifyXml(xmlText) },
+                    { name: 'yaml', formatted: yamlText, minified: minifyYaml(yamlText) },
+                    { name: 'markdown', formatted: markdownText, minified: minifyMarkdown(markdownText) }
+                ].filter(format => format.formatted);
+
+                for (const format of formats) {
+                    results[format.name] = {};
+                    
+                    // OpenAI (using tiktoken)
+                    if (openaiModel) {
+                        const encodingData = await loadEncoding('o200k_base'); // GPT-4o encoding
+                        const encoder = new Tiktoken(encodingData);
+                        results[format.name].openai = {
+                            formatted: encoder.encode(format.formatted).length,
+                            minified: encoder.encode(format.minified).length
+                        };
+                    }
+
+                    // Gemini
+                    if (geminiModel && crossModelApiKeys.gemini) {
+                        try {
+                            const formattedResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:countTokens?key=${crossModelApiKeys.gemini}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    contents: [{ parts: [{ text: format.formatted }] }]
+                                })
+                            });
+                            const formattedData = await formattedResp.json();
+                            
+                            const minifiedResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:countTokens?key=${crossModelApiKeys.gemini}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    contents: [{ parts: [{ text: format.minified }] }]
+                                })
+                            });
+                            const minifiedData = await minifiedResp.json();
+
+                            results[format.name].gemini = {
+                                formatted: formattedData.totalTokens || 0,
+                                minified: minifiedData.totalTokens || 0
+                            };
+                        } catch (error) {
+                            console.error('Gemini error:', error);
+                            results[format.name].gemini = { formatted: 'Error', minified: 'Error' };
+                        }
+                    }
+
+                    // Claude
+                    if (claudeModel && crossModelApiKeys.claude) {
+                        try {
+                            const formattedResp = await fetch('https://api.anthropic.com/v1/messages/count_tokens', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-api-key': crossModelApiKeys.claude,
+                                    'anthropic-version': '2023-06-01',
+                                    'anthropic-dangerous-direct-browser-access': 'true'
+                                },
+                                body: JSON.stringify({
+                                    model: claudeModel,
+                                    messages: [{ role: 'user', content: format.formatted }]
+                                })
+                            });
+                            const formattedData = await formattedResp.json();
+
+                            const minifiedResp = await fetch('https://api.anthropic.com/v1/messages/count_tokens', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-api-key': crossModelApiKeys.claude,
+                                    'anthropic-version': '2023-06-01',
+                                    'anthropic-dangerous-direct-browser-access': 'true'
+                                },
+                                body: JSON.stringify({
+                                    model: claudeModel,
+                                    messages: [{ role: 'user', content: format.minified }]
+                                })
+                            });
+                            const minifiedData = await minifiedResp.json();
+
+                            results[format.name].claude = {
+                                formatted: formattedData.input_tokens || 0,
+                                minified: minifiedData.input_tokens || 0
+                            };
+                        } catch (error) {
+                            console.error('Claude error:', error);
+                            results[format.name].claude = { formatted: 'Error', minified: 'Error' };
+                        }
+                    }
+                }
+
+                // Display results
+                displayCrossModelResults(results);
+                resultsDiv.style.display = 'block';
+
+            } catch (error) {
+                console.error('Cross-model comparison error:', error);
+                alert(`Error: ${error.message}`);
+            } finally {
+                compareBtn.disabled = false;
+                compareBtn.textContent = '🚀 Compare Across Models';
+            }
+        }
+
+        function displayCrossModelResults(results) {
+            Object.keys(results).forEach(format => {
+                const result = results[format];
+                
+                ['formatted', 'minified'].forEach(version => {
+                    const openaiCell = document.getElementById(`cross-${format}-${version}-openai`);
+                    const geminiCell = document.getElementById(`cross-${format}-${version}-gemini`);
+                    const claudeCell = document.getElementById(`cross-${format}-${version}-claude`);
+                    const bestCell = document.getElementById(`cross-${format}-${version}-best`);
+
+                    // Clear previous styling
+                    [openaiCell, geminiCell, claudeCell].forEach(cell => {
+                        cell.classList.remove('best-provider');
+                    });
+
+                    const openaiTokens = result.openai ? result.openai[version] : '-';
+                    const geminiTokens = result.gemini ? result.gemini[version] : '-';
+                    const claudeTokens = result.claude ? result.claude[version] : '-';
+
+                    openaiCell.textContent = openaiTokens;
+                    geminiCell.textContent = geminiTokens;
+                    claudeCell.textContent = claudeTokens;
+
+                    // Find best (lowest) token count
+                    const counts = [];
+                    if (typeof openaiTokens === 'number') counts.push({ provider: 'OpenAI', count: openaiTokens, cell: openaiCell });
+                    if (typeof geminiTokens === 'number') counts.push({ provider: 'Gemini', count: geminiTokens, cell: geminiCell });
+                    if (typeof claudeTokens === 'number') counts.push({ provider: 'Claude', count: claudeTokens, cell: claudeCell });
+
+                    if (counts.length > 0) {
+                        const best = counts.reduce((min, current) => current.count < min.count ? current : min);
+                        best.cell.classList.add('best-provider');
+                        bestCell.textContent = `${best.provider} (${best.count})`;
+                        bestCell.className = 'best-provider';
+                    } else {
+                        bestCell.textContent = '-';
+                    }
+                });
+            });
+        }
+
+        // Initialize cross-model functionality
+        setTimeout(() => {
+            loadSavedApiKeys();
+        }, 500);
         
     </script>
 </body>
