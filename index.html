@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>AI Token Efficiency: Which Data Format Saves You More Money? JSON vs XML vs YAML</title>
-    <meta name="description" content="Compare token efficiency between JSON, XML, and YAML formats. Optimize your OpenAI API costs with real token analysis. See which format saves up to 48% on AI API costs.">
-    <meta name="keywords" content="AI token efficiency, JSON vs XML vs YAML, OpenAI API cost optimization, token count comparison, data format efficiency, GPT tokens, tiktoken analysis, AI cost savings">
+    <title>AI Token Efficiency: JSON vs XML vs YAML vs Markdown - Which Format Saves More Money?</title>
+    <meta name="description" content="Compare token efficiency between JSON, XML, YAML, and Markdown formats. Optimize your OpenAI API costs with real token analysis. See which format saves up to 48% on AI API costs.">
+    <meta name="keywords" content="AI token efficiency, JSON vs XML vs YAML vs Markdown, OpenAI API cost optimization, token count comparison, data format efficiency, GPT tokens, tiktoken analysis, AI cost savings, markdown token cost">
     <meta name="author" content="Format Token Comparison Tool">
     <meta name="robots" content="index, follow">
     
@@ -90,7 +90,7 @@
         }
         .formats-container {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -183,7 +183,7 @@
         }
         .results-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -495,7 +495,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔢 AI Token Efficiency: Which Data Format Saves You More Money?</h1>
+        <h1>🔢 AI Token Efficiency: JSON vs XML vs YAML vs Markdown - Which Format Saves You More Money?</h1>
         
         <div id="library-status" class="status loading">
             ⏳ Initializing js-tiktoken library...
@@ -529,6 +529,16 @@
                     class="format-textarea" 
                     placeholder="Enter or paste YAML data here..."
                     oninput="handleFormatChange('yaml')"
+                ></textarea>
+            </div>
+            
+            <div class="format-section" id="markdown-section">
+                <h3><span class="format-icon">📄</span>Markdown Format</h3>
+                <textarea 
+                    id="markdown-input" 
+                    class="format-textarea" 
+                    placeholder="Enter or paste Markdown data here..."
+                    oninput="handleFormatChange('markdown')"
                 ></textarea>
             </div>
         </div>
@@ -611,6 +621,13 @@
                             <td id="table-yaml-chars-formatted">-</td>
                             <td id="table-yaml-chars-minified">-</td>
                         </tr>
+                        <tr>
+                            <td><strong>📄 Markdown</strong></td>
+                            <td id="table-markdown-tokens-formatted">-</td>
+                            <td id="table-markdown-tokens-minified">-</td>
+                            <td id="table-markdown-chars-formatted">-</td>
+                            <td id="table-markdown-chars-minified">-</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -658,6 +675,20 @@
                             <div class="token-version">
                                 <h5>Minified (<span id="yaml-minified-count">0</span> tokens)</h5>
                                 <div class="tokens-container" id="yaml-tokens-minified-display"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="token-format-section" id="markdown-tokens-section" style="display: none;">
+                        <h4><span class="format-icon">📄</span>Markdown Tokens</h4>
+                        <div class="token-versions">
+                            <div class="token-version">
+                                <h5>Formatted (<span id="markdown-formatted-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="markdown-tokens-formatted-display"></div>
+                            </div>
+                            <div class="token-version">
+                                <h5>Minified (<span id="markdown-minified-count">0</span> tokens)</h5>
+                                <div class="tokens-container" id="markdown-tokens-minified-display"></div>
                             </div>
                         </div>
                     </div>
@@ -853,6 +884,105 @@
             }
         }
 
+        // Markdown conversion functions
+        function dataToMarkdown(obj, title = 'Data') {
+            function objectToMarkdown(data, level = 1) {
+                let markdown = '';
+                const headingPrefix = '#'.repeat(Math.min(level, 6)) + ' ';
+                
+                if (Array.isArray(data)) {
+                    data.forEach(item => {
+                        if (typeof item === 'object' && item !== null) {
+                            markdown += objectToMarkdown(item, level);
+                        } else {
+                            markdown += `- ${item}\n`;
+                        }
+                    });
+                } else if (typeof data === 'object' && data !== null) {
+                    Object.entries(data).forEach(([key, value]) => {
+                        const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        
+                        if (Array.isArray(value)) {
+                            markdown += `\n${headingPrefix}${formattedKey}\n\n`;
+                            value.forEach(item => {
+                                if (typeof item === 'object' && item !== null) {
+                                    markdown += objectToMarkdown(item, level + 1);
+                                } else {
+                                    markdown += `- ${item}\n`;
+                                }
+                            });
+                            markdown += '\n';
+                        } else if (typeof value === 'object' && value !== null) {
+                            markdown += `\n${headingPrefix}${formattedKey}\n\n`;
+                            markdown += objectToMarkdown(value, level + 1);
+                        } else {
+                            markdown += `**${formattedKey}:** ${value}  \n`;
+                        }
+                    });
+                }
+                
+                return markdown;
+            }
+            
+            return `# ${title}\n\n${objectToMarkdown(obj)}`.trim();
+        }
+
+        function markdownToData(markdownString) {
+            // Basic markdown parsing - very simplified
+            const lines = markdownString.split('\n');
+            const result = {};
+            let currentSection = result;
+            let currentKey = null;
+            
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                
+                // Headers
+                if (trimmed.startsWith('#')) {
+                    const level = trimmed.match(/^#+/)[0].length;
+                    const title = trimmed.replace(/^#+\s*/, '').toLowerCase().replace(/\s+/g, '_');
+                    if (level === 1) {
+                        currentKey = title;
+                        result[currentKey] = {};
+                        currentSection = result[currentKey];
+                    }
+                }
+                
+                // Bold key-value pairs
+                else if (trimmed.includes('**') && trimmed.includes(':')) {
+                    const match = trimmed.match(/\*\*([^*]+)\*\*:\s*(.+)/);
+                    if (match) {
+                        const key = match[1].toLowerCase().replace(/\s+/g, '_');
+                        let value = match[2].replace(/\s+$/, '');
+                        
+                        // Try to convert to appropriate type
+                        if (value === 'true') value = true;
+                        else if (value === 'false') value = false;
+                        else if (!isNaN(value) && value !== '') value = Number(value);
+                        
+                        currentSection[key] = value;
+                    }
+                }
+                
+                // List items
+                else if (trimmed.startsWith('-')) {
+                    const item = trimmed.replace(/^-\s*/, '');
+                    if (!currentSection.items) currentSection.items = [];
+                    currentSection.items.push(item);
+                }
+            });
+            
+            return Object.keys(result).length === 1 ? result[Object.keys(result)[0]] : result;
+        }
+
+        function minifyMarkdown(markdownString) {
+            return markdownString
+                .replace(/\n\s*\n\s*\n/g, '\n\n')  // Remove excessive line breaks
+                .replace(/\s*\n\s*/g, '\n')        // Normalize line endings
+                .replace(/\s+/g, ' ')              // Collapse multiple spaces
+                .trim();
+        }
+
         // Remove the toggleMinification function since we don't need it anymore
 
         // Handle format changes and conversions
@@ -864,6 +994,7 @@
                 const jsonInput = document.getElementById('json-input');
                 const xmlInput = document.getElementById('xml-input');
                 const yamlInput = document.getElementById('yaml-input');
+                const markdownInput = document.getElementById('markdown-input');
                 
                 // Clear active states
                 document.querySelectorAll('.format-section').forEach(section => {
@@ -880,6 +1011,7 @@
                     if (!jsonText) {
                         xmlInput.value = '';
                         yamlInput.value = '';
+                        markdownInput.value = '';
                         return;
                     }
                     
@@ -887,10 +1019,12 @@
                         data = JSON.parse(jsonText);
                         xmlInput.value = jsonToXml(data);
                         yamlInput.value = jsyaml.dump(data, { indent: 2 });
+                        markdownInput.value = dataToMarkdown(data, 'Data Overview');
                     } catch (e) {
                         // Invalid JSON, clear other formats
                         xmlInput.value = '';
                         yamlInput.value = '';
+                        markdownInput.value = '';
                     }
                     
                 } else if (changedFormat === 'xml') {
@@ -898,6 +1032,7 @@
                     if (!xmlText) {
                         jsonInput.value = '';
                         yamlInput.value = '';
+                        markdownInput.value = '';
                         return;
                     }
                     
@@ -905,10 +1040,12 @@
                         data = xmlToJson(xmlText);
                         jsonInput.value = JSON.stringify(data, null, 2);
                         yamlInput.value = jsyaml.dump(data, { indent: 2 });
+                        markdownInput.value = dataToMarkdown(data, 'Data Overview');
                     } catch (e) {
                         // Invalid XML, clear other formats
                         jsonInput.value = '';
                         yamlInput.value = '';
+                        markdownInput.value = '';
                     }
                     
                 } else if (changedFormat === 'yaml') {
@@ -916,6 +1053,7 @@
                     if (!yamlText) {
                         jsonInput.value = '';
                         xmlInput.value = '';
+                        markdownInput.value = '';
                         return;
                     }
                     
@@ -923,10 +1061,32 @@
                         data = jsyaml.load(yamlText);
                         jsonInput.value = JSON.stringify(data, null, 2);
                         xmlInput.value = jsonToXml(data);
+                        markdownInput.value = dataToMarkdown(data, 'Data Overview');
                     } catch (e) {
                         // Invalid YAML, clear other formats
                         jsonInput.value = '';
                         xmlInput.value = '';
+                        markdownInput.value = '';
+                    }
+                } else if (changedFormat === 'markdown') {
+                    const markdownText = markdownInput.value.trim();
+                    if (!markdownText) {
+                        jsonInput.value = '';
+                        xmlInput.value = '';
+                        yamlInput.value = '';
+                        return;
+                    }
+                    
+                    try {
+                        data = markdownToData(markdownText);
+                        jsonInput.value = JSON.stringify(data, null, 2);
+                        xmlInput.value = jsonToXml(data);
+                        yamlInput.value = jsyaml.dump(data, { indent: 2 });
+                    } catch (e) {
+                        // Invalid Markdown, clear other formats
+                        jsonInput.value = '';
+                        xmlInput.value = '';
+                        yamlInput.value = '';
                     }
                 }
                 
@@ -946,8 +1106,9 @@
             const jsonText = document.getElementById('json-input').value.trim();
             const xmlText = document.getElementById('xml-input').value.trim();
             const yamlText = document.getElementById('yaml-input').value.trim();
+            const markdownText = document.getElementById('markdown-input').value.trim();
             
-            if (!jsonText && !xmlText && !yamlText) {
+            if (!jsonText && !xmlText && !yamlText && !markdownText) {
                 showError('Please enter data in at least one format.');
                 return;
             }
@@ -1040,6 +1201,36 @@
                             tokens: formattedTokens.length,
                             chars: yamlText.length,
                             text: yamlText,
+                            tokenIds: formattedTokens,
+                            decodedTokens: formattedDecodedTokens
+                        },
+                        minified: {
+                            tokens: minifiedTokens.length,
+                            chars: minifiedText.length,
+                            text: minifiedText,
+                            tokenIds: minifiedTokens,
+                            decodedTokens: minifiedDecodedTokens
+                        },
+                        savings: formattedTokens.length - minifiedTokens.length
+                    };
+                }
+                
+                if (markdownText) {
+                    const minifiedText = minifyMarkdown(markdownText);
+                    
+                    // Formatted version
+                    const formattedTokens = encoder.encode(markdownText);
+                    const formattedDecodedTokens = formattedTokens.map(token => encoder.decode([token]));
+                    
+                    // Minified version
+                    const minifiedTokens = encoder.encode(minifiedText);
+                    const minifiedDecodedTokens = minifiedTokens.map(token => encoder.decode([token]));
+                    
+                    results.markdown = {
+                        formatted: {
+                            tokens: formattedTokens.length,
+                            chars: markdownText.length,
+                            text: markdownText,
                             tokenIds: formattedTokens,
                             decodedTokens: formattedDecodedTokens
                         },
