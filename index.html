@@ -431,6 +431,46 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
+        .token-view-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .token-view-toggle label {
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .token-view-toggle input[type="radio"] {
+            margin: 0;
+            transform: scale(0.9);
+        }
+        .text-view-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            color: #333;
+        }
+        .tokens-view-active .text-view-container {
+            display: none;
+        }
+        .text-view-active .tokens-container {
+            display: none;
+        }
         .footer {
             margin-top: 50px;
             padding: 30px 20px;
@@ -640,12 +680,38 @@
                     <div class="token-format-section" id="json-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📄</span>JSON Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="json-formatted-version">
                                 <h5>Formatted (<span id="json-formatted-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="json-formatted-view" value="text" checked 
+                                               onchange="toggleTokenView('json', 'formatted', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="json-formatted-view" value="tokens" 
+                                               onchange="toggleTokenView('json', 'formatted', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="json-text-formatted-display"></div>
                                 <div class="tokens-container" id="json-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="json-minified-version">
                                 <h5>Minified (<span id="json-minified-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="json-minified-view" value="text" checked 
+                                               onchange="toggleTokenView('json', 'minified', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="json-minified-view" value="tokens" 
+                                               onchange="toggleTokenView('json', 'minified', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="json-text-minified-display"></div>
                                 <div class="tokens-container" id="json-tokens-minified-display"></div>
                             </div>
                         </div>
@@ -654,12 +720,38 @@
                     <div class="token-format-section" id="xml-tokens-section" style="display: none;">
                         <h4><span class="format-icon">🏷️</span>XML Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="xml-formatted-version">
                                 <h5>Formatted (<span id="xml-formatted-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="xml-formatted-view" value="text" checked 
+                                               onchange="toggleTokenView('xml', 'formatted', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="xml-formatted-view" value="tokens" 
+                                               onchange="toggleTokenView('xml', 'formatted', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="xml-text-formatted-display"></div>
                                 <div class="tokens-container" id="xml-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="xml-minified-version">
                                 <h5>Minified (<span id="xml-minified-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="xml-minified-view" value="text" checked 
+                                               onchange="toggleTokenView('xml', 'minified', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="xml-minified-view" value="tokens" 
+                                               onchange="toggleTokenView('xml', 'minified', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="xml-text-minified-display"></div>
                                 <div class="tokens-container" id="xml-tokens-minified-display"></div>
                             </div>
                         </div>
@@ -668,12 +760,38 @@
                     <div class="token-format-section" id="yaml-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📝</span>YAML Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="yaml-formatted-version">
                                 <h5>Formatted (<span id="yaml-formatted-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="yaml-formatted-view" value="text" checked 
+                                               onchange="toggleTokenView('yaml', 'formatted', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="yaml-formatted-view" value="tokens" 
+                                               onchange="toggleTokenView('yaml', 'formatted', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="yaml-text-formatted-display"></div>
                                 <div class="tokens-container" id="yaml-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="yaml-minified-version">
                                 <h5>Minified (<span id="yaml-minified-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="yaml-minified-view" value="text" checked 
+                                               onchange="toggleTokenView('yaml', 'minified', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="yaml-minified-view" value="tokens" 
+                                               onchange="toggleTokenView('yaml', 'minified', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="yaml-text-minified-display"></div>
                                 <div class="tokens-container" id="yaml-tokens-minified-display"></div>
                             </div>
                         </div>
@@ -682,12 +800,38 @@
                     <div class="token-format-section" id="markdown-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📄</span>Markdown Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="markdown-formatted-version">
                                 <h5>Formatted (<span id="markdown-formatted-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="markdown-formatted-view" value="text" checked 
+                                               onchange="toggleTokenView('markdown', 'formatted', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="markdown-formatted-view" value="tokens" 
+                                               onchange="toggleTokenView('markdown', 'formatted', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="markdown-text-formatted-display"></div>
                                 <div class="tokens-container" id="markdown-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version">
+                            <div class="token-version text-view-active" id="markdown-minified-version">
                                 <h5>Minified (<span id="markdown-minified-count">0</span> tokens)</h5>
+                                <div class="token-view-toggle">
+                                    <label>
+                                        <input type="radio" name="markdown-minified-view" value="text" checked 
+                                               onchange="toggleTokenView('markdown', 'minified', this.value)">
+                                        📝 Text View
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="markdown-minified-view" value="tokens" 
+                                               onchange="toggleTokenView('markdown', 'minified', this.value)">
+                                        🔍 Token View
+                                    </label>
+                                </div>
+                                <div class="text-view-container" id="markdown-text-minified-display"></div>
                                 <div class="tokens-container" id="markdown-tokens-minified-display"></div>
                             </div>
                         </div>
@@ -1334,22 +1478,32 @@
             // Show the section
             tokenSection.style.display = 'block';
             
-            // Update formatted version
+            // Update formatted version - both text and token views
             const formattedContainer = document.getElementById(`${format}-tokens-formatted-display`);
+            const formattedTextContainer = document.getElementById(`${format}-text-formatted-display`);
             const formattedCount = document.getElementById(`${format}-formatted-count`);
             formattedCount.textContent = result.formatted.tokens;
             
+            // Populate text view
+            formattedTextContainer.textContent = result.formatted.text;
+            
+            // Populate token view
             formattedContainer.innerHTML = '';
             result.formatted.decodedTokens.forEach((tokenText, index) => {
                 const tokenSpan = createTokenElement(tokenText, index, result.formatted.tokenIds[index]);
                 formattedContainer.appendChild(tokenSpan);
             });
             
-            // Update minified version
+            // Update minified version - both text and token views
             const minifiedContainer = document.getElementById(`${format}-tokens-minified-display`);
+            const minifiedTextContainer = document.getElementById(`${format}-text-minified-display`);
             const minifiedCount = document.getElementById(`${format}-minified-count`);
             minifiedCount.textContent = result.minified.tokens;
             
+            // Populate text view
+            minifiedTextContainer.textContent = result.minified.text;
+            
+            // Populate token view
             minifiedContainer.innerHTML = '';
             result.minified.decodedTokens.forEach((tokenText, index) => {
                 const tokenSpan = createTokenElement(tokenText, index, result.minified.tokenIds[index]);
@@ -1394,6 +1548,19 @@
             tokenSpan.title = `Token ${index + 1}: "${tokenText}" (ID: ${tokenId})`;
             
             return tokenSpan;
+        }
+
+        // Toggle between text view and token view
+        window.toggleTokenView = function(format, version, viewType) {
+            const versionContainer = document.getElementById(`${format}-${version}-version`);
+            
+            if (viewType === 'text') {
+                versionContainer.classList.remove('tokens-view-active');
+                versionContainer.classList.add('text-view-active');
+            } else {
+                versionContainer.classList.remove('text-view-active');
+                versionContainer.classList.add('tokens-view-active');
+            }
         }
 
         // Load sample data
