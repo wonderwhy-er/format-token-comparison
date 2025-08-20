@@ -129,6 +129,16 @@
             border-color: #4CAF50;
             outline: none;
         }
+        .format-textarea[readonly] {
+            background-color: #f8f9fa;
+            color: #495057;
+            border-color: #e9ecef;
+            cursor: default;
+        }
+        .format-textarea[readonly]:focus {
+            border-color: #e9ecef;
+            box-shadow: none;
+        }
         .controls {
             display: flex;
             align-items: center;
@@ -577,8 +587,8 @@
                 <textarea 
                     id="markdown-input" 
                     class="format-textarea" 
-                    placeholder="Enter or paste Markdown data here..."
-                    oninput="handleFormatChange('markdown')"
+                    placeholder="Generated markdown will appear here (read-only)..."
+                    readonly
                 ></textarea>
             </div>
         </div>
@@ -680,16 +690,16 @@
                     <div class="token-format-section" id="json-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📄</span>JSON Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version text-view-active" id="json-formatted-version">
+                            <div class="token-version tokens-view-active" id="json-formatted-version">
                                 <h5>Formatted (<span id="json-formatted-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="json-formatted-view" value="text" checked 
+                                        <input type="radio" name="json-formatted-view" value="text" 
                                                onchange="toggleTokenView('json', 'formatted', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="json-formatted-view" value="tokens" 
+                                        <input type="radio" name="json-formatted-view" value="tokens" checked
                                                onchange="toggleTokenView('json', 'formatted', this.value)">
                                         🔍 Token View
                                     </label>
@@ -697,16 +707,16 @@
                                 <div class="text-view-container" id="json-text-formatted-display"></div>
                                 <div class="tokens-container" id="json-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version text-view-active" id="json-minified-version">
+                            <div class="token-version tokens-view-active" id="json-minified-version">
                                 <h5>Minified (<span id="json-minified-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="json-minified-view" value="text" checked 
+                                        <input type="radio" name="json-minified-view" value="text" 
                                                onchange="toggleTokenView('json', 'minified', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="json-minified-view" value="tokens" 
+                                        <input type="radio" name="json-minified-view" value="tokens" checked
                                                onchange="toggleTokenView('json', 'minified', this.value)">
                                         🔍 Token View
                                     </label>
@@ -720,16 +730,16 @@
                     <div class="token-format-section" id="xml-tokens-section" style="display: none;">
                         <h4><span class="format-icon">🏷️</span>XML Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version text-view-active" id="xml-formatted-version">
+                            <div class="token-version tokens-view-active" id="xml-formatted-version">
                                 <h5>Formatted (<span id="xml-formatted-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="xml-formatted-view" value="text" checked 
+                                        <input type="radio" name="xml-formatted-view" value="text" 
                                                onchange="toggleTokenView('xml', 'formatted', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="xml-formatted-view" value="tokens" 
+                                        <input type="radio" name="xml-formatted-view" value="tokens" checked
                                                onchange="toggleTokenView('xml', 'formatted', this.value)">
                                         🔍 Token View
                                     </label>
@@ -737,16 +747,16 @@
                                 <div class="text-view-container" id="xml-text-formatted-display"></div>
                                 <div class="tokens-container" id="xml-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version text-view-active" id="xml-minified-version">
+                            <div class="token-version tokens-view-active" id="xml-minified-version">
                                 <h5>Minified (<span id="xml-minified-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="xml-minified-view" value="text" checked 
+                                        <input type="radio" name="xml-minified-view" value="text" 
                                                onchange="toggleTokenView('xml', 'minified', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="xml-minified-view" value="tokens" 
+                                        <input type="radio" name="xml-minified-view" value="tokens" checked
                                                onchange="toggleTokenView('xml', 'minified', this.value)">
                                         🔍 Token View
                                     </label>
@@ -760,16 +770,16 @@
                     <div class="token-format-section" id="yaml-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📝</span>YAML Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version text-view-active" id="yaml-formatted-version">
+                            <div class="token-version tokens-view-active" id="yaml-formatted-version">
                                 <h5>Formatted (<span id="yaml-formatted-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="yaml-formatted-view" value="text" checked 
+                                        <input type="radio" name="yaml-formatted-view" value="text" 
                                                onchange="toggleTokenView('yaml', 'formatted', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="yaml-formatted-view" value="tokens" 
+                                        <input type="radio" name="yaml-formatted-view" value="tokens" checked
                                                onchange="toggleTokenView('yaml', 'formatted', this.value)">
                                         🔍 Token View
                                     </label>
@@ -777,16 +787,16 @@
                                 <div class="text-view-container" id="yaml-text-formatted-display"></div>
                                 <div class="tokens-container" id="yaml-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version text-view-active" id="yaml-minified-version">
+                            <div class="token-version tokens-view-active" id="yaml-minified-version">
                                 <h5>Minified (<span id="yaml-minified-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="yaml-minified-view" value="text" checked 
+                                        <input type="radio" name="yaml-minified-view" value="text" 
                                                onchange="toggleTokenView('yaml', 'minified', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="yaml-minified-view" value="tokens" 
+                                        <input type="radio" name="yaml-minified-view" value="tokens" checked
                                                onchange="toggleTokenView('yaml', 'minified', this.value)">
                                         🔍 Token View
                                     </label>
@@ -800,16 +810,16 @@
                     <div class="token-format-section" id="markdown-tokens-section" style="display: none;">
                         <h4><span class="format-icon">📄</span>Markdown Tokens</h4>
                         <div class="token-versions">
-                            <div class="token-version text-view-active" id="markdown-formatted-version">
+                            <div class="token-version tokens-view-active" id="markdown-formatted-version">
                                 <h5>Formatted (<span id="markdown-formatted-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="markdown-formatted-view" value="text" checked 
+                                        <input type="radio" name="markdown-formatted-view" value="text" 
                                                onchange="toggleTokenView('markdown', 'formatted', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="markdown-formatted-view" value="tokens" 
+                                        <input type="radio" name="markdown-formatted-view" value="tokens" checked
                                                onchange="toggleTokenView('markdown', 'formatted', this.value)">
                                         🔍 Token View
                                     </label>
@@ -817,16 +827,16 @@
                                 <div class="text-view-container" id="markdown-text-formatted-display"></div>
                                 <div class="tokens-container" id="markdown-tokens-formatted-display"></div>
                             </div>
-                            <div class="token-version text-view-active" id="markdown-minified-version">
+                            <div class="token-version tokens-view-active" id="markdown-minified-version">
                                 <h5>Minified (<span id="markdown-minified-count">0</span> tokens)</h5>
                                 <div class="token-view-toggle">
                                     <label>
-                                        <input type="radio" name="markdown-minified-view" value="text" checked 
+                                        <input type="radio" name="markdown-minified-view" value="text" 
                                                onchange="toggleTokenView('markdown', 'minified', this.value)">
                                         📝 Text View
                                     </label>
                                     <label>
-                                        <input type="radio" name="markdown-minified-view" value="tokens" 
+                                        <input type="radio" name="markdown-minified-view" value="tokens" checked
                                                onchange="toggleTokenView('markdown', 'minified', this.value)">
                                         🔍 Token View
                                     </label>
@@ -1071,54 +1081,6 @@
             return `# ${title}\n\n${objectToMarkdown(obj)}`.trim();
         }
 
-        function markdownToData(markdownString) {
-            // Basic markdown parsing - very simplified
-            const lines = markdownString.split('\n');
-            const result = {};
-            let currentSection = result;
-            let currentKey = null;
-            
-            lines.forEach(line => {
-                const trimmed = line.trim();
-                
-                // Headers
-                if (trimmed.startsWith('#')) {
-                    const level = trimmed.match(/^#+/)[0].length;
-                    const title = trimmed.replace(/^#+\s*/, '').toLowerCase().replace(/\s+/g, '_');
-                    if (level === 1) {
-                        currentKey = title;
-                        result[currentKey] = {};
-                        currentSection = result[currentKey];
-                    }
-                }
-                
-                // Bold key-value pairs
-                else if (trimmed.includes('**') && trimmed.includes(':')) {
-                    const match = trimmed.match(/\*\*([^*]+)\*\*:\s*(.+)/);
-                    if (match) {
-                        const key = match[1].toLowerCase().replace(/\s+/g, '_');
-                        let value = match[2].replace(/\s+$/, '');
-                        
-                        // Try to convert to appropriate type
-                        if (value === 'true') value = true;
-                        else if (value === 'false') value = false;
-                        else if (!isNaN(value) && value !== '') value = Number(value);
-                        
-                        currentSection[key] = value;
-                    }
-                }
-                
-                // List items
-                else if (trimmed.startsWith('-')) {
-                    const item = trimmed.replace(/^-\s*/, '');
-                    if (!currentSection.items) currentSection.items = [];
-                    currentSection.items.push(item);
-                }
-            });
-            
-            return Object.keys(result).length === 1 ? result[Object.keys(result)[0]] : result;
-        }
-
         function minifyMarkdown(markdownString) {
             return markdownString
                 .replace(/\n\s*\n\s*\n/g, '\n\n')  // Remove excessive line breaks
@@ -1212,26 +1174,6 @@
                         xmlInput.value = '';
                         markdownInput.value = '';
                     }
-                } else if (changedFormat === 'markdown') {
-                    const markdownText = markdownInput.value.trim();
-                    if (!markdownText) {
-                        jsonInput.value = '';
-                        xmlInput.value = '';
-                        yamlInput.value = '';
-                        return;
-                    }
-                    
-                    try {
-                        data = markdownToData(markdownText);
-                        jsonInput.value = JSON.stringify(data, null, 2);
-                        xmlInput.value = jsonToXml(data);
-                        yamlInput.value = jsyaml.dump(data, { indent: 2 });
-                    } catch (e) {
-                        // Invalid Markdown, clear other formats
-                        jsonInput.value = '';
-                        xmlInput.value = '';
-                        yamlInput.value = '';
-                    }
                 }
                 
             } catch (error) {
@@ -1252,8 +1194,8 @@
             const yamlText = document.getElementById('yaml-input').value.trim();
             const markdownText = document.getElementById('markdown-input').value.trim();
             
-            if (!jsonText && !xmlText && !yamlText && !markdownText) {
-                showError('Please enter data in at least one format.');
+            if (!jsonText && !xmlText && !yamlText) {
+                showError('Please enter data in JSON, XML, or YAML format.');
                 return;
             }
             
